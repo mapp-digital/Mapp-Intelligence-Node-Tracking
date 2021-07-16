@@ -1,0 +1,43 @@
+{
+    "name": "@mapp-intelligence/node",
+    "version": "0.0.3",
+    "description": "Mapp Intelligence - Server-side NodeJS tracking library",
+    "author": "Mapp Digital c/o Webtrekk GmbH",
+    "license": "MIT",
+    "main": "./index.js",
+    "typings": "./types/MappIntelligence.d.ts",
+    "homepage": "https://mapp.com/",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mapp-digital/Mapp-Intelligence-Node-Tracking"
+    },
+    "bugs": {
+        "url": "https://github.com/mapp-digital/Mapp-Intelligence-Node-Tracking/issues"
+    },
+    "bin": {
+        "mapp-intelligence-node": "cronjob.js"
+    },
+    "scripts": {
+        "build": "npm run umd && npm run types",
+        "umd": "node ./scripts/rollup/build.js",
+        "types": "node ./scripts/dts/index.js",
+        "release": "npm run test && npm run build && node ./scripts/release/index.js",
+        "test": "jest --config ./jest.config.js"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "@babel/core": "^7.4.3",
+        "@babel/preset-env": "^7.4.3",
+        "@babel/preset-typescript": "^7.14.5",
+        "@types/jest": "^26.0.23",
+        "@types/node": "^15.6.1",
+        "jest": "^27.0.4",
+        "rollup": "^1.10.0",
+        "rollup-plugin-babel": "^4.3.2",
+        "rollup-plugin-replace": "^2.2.0",
+        "rollup-plugin-typescript": "^1.0.1",
+        "ts-jest": "^27.0.3",
+        "tslib": "^2.2.0",
+        "typescript": "^4.2.4"
+    }
+}

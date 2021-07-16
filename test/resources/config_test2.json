@@ -1,0 +1,5 @@
+{
+    "consumer": {
+        "consumerType": "FORK_CURL"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "stripInternal": true,
+        "skipLibCheck": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true
+    },
+    "files": [],
+    "include": [
+        "./src/MappIntelligence.ts"
+    ]
+}

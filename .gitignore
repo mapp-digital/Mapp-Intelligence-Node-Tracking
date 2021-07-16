@@ -1,0 +1,42 @@
+# Node
+**/node_modules/*
+node_modules/*
+.npm-*
+*lock*
+*.log
+*.lock
+
+# Coverage
+**/reports/*
+**/coverage/*
+!scripts/**
+
+# JetBrains
+.idea
+.project
+.settings
+.idea/*
+**/.idea/*
+*.iml
+
+# VS Code
+.vscode/*
+**/.vscode/*
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Mac
+.DS_Store
+**/.DS_Store
+
+# Ngc generated files
+**/*.ngfactory.ts
+
+# Playground tmp files
+.playground
+
+# Temp files
+**/.build/*
+**/.release/*
