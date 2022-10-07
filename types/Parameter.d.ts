@@ -17,6 +17,7 @@ export declare class Parameter {
     static readonly PRODUCT_COST: string;
     static readonly PRODUCT_QUANTITY: string;
     static readonly PRODUCT_STATUS: string;
+    static readonly PIXEL_FEATURES: string;
     static readonly EMAIL: string;
     static readonly EMAIL_RID: string;
     static readonly EMAIL_OPTIN: string;

@@ -1,6 +1,6 @@
 import {promises as fs} from 'fs';
 import {ILogger} from '../../../src/ILogger';
-import {MappIntelligenceQueue} from '../../../src/MappIntelligence';
+import {MappIntelligenceQueue, MappIntelligenceTracking} from '../../../src/MappIntelligence';
 
 export class CustomLogger implements ILogger {
     private messages: Array<string> = [];
@@ -15,6 +15,19 @@ export class CustomLogger implements ILogger {
 }
 
 export class MappIntelligenceUnitUtil {
+    /**
+     * @param str String to encoding
+     * @returns string
+     */
+    private static encode(str: string): string {
+        try {
+            return encodeURIComponent(str);
+        } catch (e) {
+            /* istanbul ignore next */
+            return escape(str);
+        }
+    }
+
     /**
      * @returns CustomLogger
      */
@@ -32,6 +45,22 @@ export class MappIntelligenceUnitUtil {
         }
 
         return instance.queue.getQueue();
+    }
+
+    /**
+     * @param request
+     * @param pixelFeatures
+     * @returns boolean
+     */
+    public static checkStatistics(request: string, pixelFeatures: string): boolean {
+        if (request.indexOf(`pf=${pixelFeatures}`) !== -1
+            && request.indexOf(`cs801=${MappIntelligenceUnitUtil.encode(MappIntelligenceTracking.VERSION)}`) !== -1
+            && request.indexOf(`cs802=${MappIntelligenceTracking.TRACKING_PLATFORM}`) !== -1) {
+            return true;
+        }
+
+        console.info(request,`pf=${pixelFeatures}`);
+        return false;
     }
 
     /**

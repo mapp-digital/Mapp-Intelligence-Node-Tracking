@@ -36,6 +36,7 @@ export declare class Config {
     private cookie;
     constructor(tId?: string, tDomain?: string);
     private getOwnDomain;
+    private getStatistics;
     private static decode;
     private static getOrDefault;
     setTrackId(tId: string): Config;

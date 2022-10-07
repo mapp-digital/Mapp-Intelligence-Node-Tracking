@@ -40,7 +40,7 @@ export abstract class ACore extends ACleaner {
     /**
      * Constant for tracking platform.
      */
-    protected static readonly TRACKING_PLATFORM: string = 'Node';
+    public static readonly TRACKING_PLATFORM: string = 'Node';
 
     /**
      * Deactivate the tracking functionality.
@@ -68,20 +68,26 @@ export abstract class ACore extends ACleaner {
     protected readonly logger: DebugLogger;
 
     /**
+     * Mapp Intelligence tracking configuration.
+     */
+    protected readonly config: {[key: string]: any};
+
+    /**
      * @param config Mapp Intelligence configuration
      */
     protected constructor(config: Config) {
         super();
 
-        const mappIntelligenceConfig: {[key: string]: any} = config.build();
-        this.queue = new Queue(mappIntelligenceConfig);
+        this.config = config.build();
 
-        const l: ILogger = mappIntelligenceConfig['logger'];
+        this.queue = new Queue(this.config);
+
+        const l: ILogger = this.config['logger'];
         this.logger = new DebugLogger(l);
 
-        this.deactivate = mappIntelligenceConfig['deactivate'];
-        this.trackId = mappIntelligenceConfig['trackId'];
-        this.trackDomain = mappIntelligenceConfig['trackDomain'];
+        this.deactivate = this.config['deactivate'];
+        this.trackId = this.config['trackId'];
+        this.trackDomain = this.config['trackDomain'];
     }
 
     /**

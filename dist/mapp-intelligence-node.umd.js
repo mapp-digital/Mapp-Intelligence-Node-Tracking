@@ -56,6 +56,7 @@
         Parameter.PRODUCT_COST = 'co';
         Parameter.PRODUCT_QUANTITY = 'qn';
         Parameter.PRODUCT_STATUS = 'st';
+        Parameter.PIXEL_FEATURES = 'pf';
         Parameter.EMAIL = CustomParameter.CUSTOM_URM_CATEGORY.with(700);
         Parameter.EMAIL_RID = CustomParameter.CUSTOM_URM_CATEGORY.with(701);
         Parameter.EMAIL_OPTIN = CustomParameter.CUSTOM_URM_CATEGORY.with(702);
@@ -346,6 +347,31 @@
             }
             return this.requestURL.host;
         };
+        Config.prototype.getStatistics = function () {
+            var statistics = 0;
+            if (this.useParamsForDefaultPageName.length > 0) {
+                statistics += 1;
+            }
+            if (this.forceSSL) {
+                statistics += 2;
+            }
+            if (this.logger) {
+                statistics += 4;
+            }
+            if (this.consumerType === ConsumerType.FORK_CURL) {
+                statistics += 16;
+            }
+            if (this.consumerType === ConsumerType.HTTP_CLIENT) {
+                statistics += 32;
+            }
+            if (this.consumerType === ConsumerType.FILE) {
+                statistics += 128;
+            }
+            if (this.consumerType === ConsumerType.CUSTOM) {
+                statistics += 256;
+            }
+            return statistics;
+        };
         Config.decode = function (str) {
             if (str) {
                 try {
@@ -506,6 +532,7 @@
                 }
                 this.maxBatchSize = 1;
             }
+            var statistics = this.getStatistics();
             return {
                 trackId: this.trackId,
                 trackDomain: this.trackDomain,
@@ -529,7 +556,8 @@
                 remoteAddress: this.remoteAddress,
                 referrerURL: this.referrerURL,
                 requestURL: this.requestURL,
-                cookie: this.cookie
+                cookie: this.cookie,
+                statistics: statistics
             };
         };
         Config.DEFAULT_ATTEMPT_TIMEOUT = 100;
@@ -1614,13 +1642,13 @@
         __extends(ACore, _super);
         function ACore(config) {
             var _this = _super.call(this) || this;
-            var mappIntelligenceConfig = config.build();
-            _this.queue = new Queue(mappIntelligenceConfig);
-            var l = mappIntelligenceConfig['logger'];
+            _this.config = config.build();
+            _this.queue = new Queue(_this.config);
+            var l = _this.config['logger'];
             _this.logger = new DebugLogger(l);
-            _this.deactivate = mappIntelligenceConfig['deactivate'];
-            _this.trackId = mappIntelligenceConfig['trackId'];
-            _this.trackDomain = mappIntelligenceConfig['trackDomain'];
+            _this.deactivate = _this.config['deactivate'];
+            _this.trackId = _this.config['trackId'];
+            _this.trackDomain = _this.config['trackDomain'];
             return _this;
         }
         ACore.prototype.close = function () {
@@ -1642,7 +1670,7 @@
             }
             return this.queue.getUserIdCookie(pixelVersion, context);
         };
-        ACore.VERSION = '0.0.3';
+        ACore.VERSION = '0.0.4';
         ACore.V4 = 'v4';
         ACore.V5 = 'v5';
         ACore.SMART = 'smart';
@@ -1850,7 +1878,8 @@
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            requestData[Parameter.VERSION] = ACore.VERSION;
+                            requestData[Parameter.PIXEL_FEATURES] = this.config['statistics'];
+                            requestData[Parameter.VERSION] = Tracking.VERSION;
                             requestData[Parameter.TRACKING_PLATFORM] = Tracking.TRACKING_PLATFORM;
                             return [4, this.queue.add(requestData)];
                         case 1:

@@ -36,6 +36,7 @@ describe('MappIntelligenceConfig', () => {
         expect(config['requestURL']).toBeUndefined();
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
+        expect(34).toBe(config['statistics']);
     });
 
     it('null config', async () => {
@@ -77,6 +78,7 @@ describe('MappIntelligenceConfig', () => {
         expect(config['requestURL']).toBeUndefined();
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
+        expect(34).toBe(config['statistics']);
     });
 
     it('invalid config file', async () => {
@@ -104,6 +106,7 @@ describe('MappIntelligenceConfig', () => {
         expect(config['requestURL']).toBeUndefined();
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
+        expect(34).toBe(config['statistics']);
     });
 
     it('empty config file', async () => {
@@ -131,6 +134,7 @@ describe('MappIntelligenceConfig', () => {
         expect(config['requestURL']).toBeUndefined();
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
+        expect(34).toBe(config['statistics']);
     });
 
     it('JSON config file - 1', async () => {
@@ -158,6 +162,7 @@ describe('MappIntelligenceConfig', () => {
         expect(config['requestURL']).toBeUndefined();
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
+        expect(34).toBe(config['statistics']);
     });
 
     it('JSON config file - 2', async () => {
@@ -185,6 +190,7 @@ describe('MappIntelligenceConfig', () => {
         expect(config['requestURL']).toBeUndefined();
         expect(config['filePath']).toMatch(/^.+$/);
         expect('MappIntelligenceRequests').toBe(config['filePrefix']);
+        expect(131).toBe(config['statistics']);
     });
 
     it('JSON config file - 3', async () => {
@@ -212,6 +218,7 @@ describe('MappIntelligenceConfig', () => {
         expect(config['requestURL']).toBeUndefined();
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
+        expect(18).toBe(config['statistics']);
     });
 
     it('JSON config file - 4', async () => {
@@ -239,6 +246,7 @@ describe('MappIntelligenceConfig', () => {
         expect(config['requestURL']).toBeUndefined();
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
+        expect(34).toBe(config['statistics']);
     });
 
     it('overwrite JSON config file', async () => {
@@ -279,6 +287,7 @@ describe('MappIntelligenceConfig', () => {
         expect(config['requestURL']).toBeUndefined();
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
+        expect(33).toBe(config['statistics']);
     });
 
     it('JS config file - 1', async () => {
@@ -306,6 +315,7 @@ describe('MappIntelligenceConfig', () => {
         expect(config['requestURL']).toBeUndefined();
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
+        expect(34).toBe(config['statistics']);
     });
 
     it('JS config file - 2', async () => {
@@ -333,6 +343,7 @@ describe('MappIntelligenceConfig', () => {
         expect(config['requestURL']).toBeUndefined();
         expect(config['filePath']).toMatch(/^.+$/);
         expect('MappIntelligenceRequests').toBe(config['filePrefix']);
+        expect(131).toBe(config['statistics']);
     });
 
     it('overwrite JS config file', async () => {
@@ -373,6 +384,7 @@ describe('MappIntelligenceConfig', () => {
         expect(config['requestURL']).toBeUndefined();
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
+        expect(33).toBe(config['statistics']);
     });
 
     it('config with trackId and trackDomain', async () => {
@@ -408,6 +420,7 @@ describe('MappIntelligenceConfig', () => {
         expect('null').toBe(config['filePrefix']);
         expect(MappIntelligenceConsumerType.FILE).toBe(config['consumerType']);
         expect(1).toBe(config['maxBatchSize']);
+        expect(134).toBe(config['statistics']);
     });
 
     it('header data', async () => {

@@ -22,6 +22,7 @@ export class Parameter {
     public static readonly PRODUCT_COST: string = 'co';
     public static readonly PRODUCT_QUANTITY: string = 'qn';
     public static readonly PRODUCT_STATUS: string = 'st';
+    public static readonly PIXEL_FEATURES: string = 'pf';
 
     // predefined custom parameter and category
     // predefined urm category

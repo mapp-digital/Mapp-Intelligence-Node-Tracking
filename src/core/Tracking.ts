@@ -130,7 +130,8 @@ export class Tracking extends ACore {
      * @return boolean
      */
     private async addToRequestQueue(requestData: {[key: string]: string}): Promise<boolean> {
-        requestData[Parameter.VERSION] = ACore.VERSION;
+        requestData[Parameter.PIXEL_FEATURES] = this.config['statistics'];
+        requestData[Parameter.VERSION] = Tracking.VERSION;
         requestData[Parameter.TRACKING_PLATFORM] = Tracking.TRACKING_PLATFORM;
 
         await this.queue.add(requestData);

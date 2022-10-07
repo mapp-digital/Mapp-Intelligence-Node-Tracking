@@ -23,6 +23,7 @@ describe('MappIntelligenceParameter', () => {
         expect(MappIntelligenceParameter.PRODUCT_COST).toBe('co');
         expect(MappIntelligenceParameter.PRODUCT_QUANTITY).toBe('qn');
         expect(MappIntelligenceParameter.PRODUCT_STATUS).toBe('st');
+        expect(MappIntelligenceParameter.PIXEL_FEATURES).toBe('pf');
     });
 
     describe('predefined custom parameter and category', () => {

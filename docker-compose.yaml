@@ -1,0 +1,14 @@
+version: "3.3"
+
+services:
+  node:
+    build:
+      context: .
+      args:
+        CONTAINER_VERSION: ${CONTAINER_VERSION}
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
+        TYPE: ${TYPE}
+      dockerfile: Dockerfile
+    volumes:
+      - "./:/app"

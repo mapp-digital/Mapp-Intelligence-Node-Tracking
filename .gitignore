@@ -40,3 +40,4 @@ Desktop.ini
 # Temp files
 **/.build/*
 **/.release/*
+node-version.txt

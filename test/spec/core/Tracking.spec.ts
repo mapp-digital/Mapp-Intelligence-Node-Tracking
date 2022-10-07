@@ -78,6 +78,7 @@ describe('MappIntelligenceTracking', () => {
         const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(mit);
         expect(requests.length).toBe(1);
         expect(requests[0]).toMatch(/^wt\?p=600,0,,,,,[0-9]{13},0,,&.+/);
+        expect(MappIntelligenceUnitUtil.checkStatistics(requests[0], '34')).toBeTruthy();
     });
 
     it('empty track', async () => {
@@ -90,6 +91,7 @@ describe('MappIntelligenceTracking', () => {
         const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(mit);
         expect(requests.length).toBe(1);
         expect(requests[0]).toMatch(/^wt\?p=600,0,,,,,[0-9]{13},0,,&.+/);
+        expect(MappIntelligenceUnitUtil.checkStatistics(requests[0], '34')).toBeTruthy();
     });
 
     it('tracking is deactivated', async () => {
@@ -114,6 +116,7 @@ describe('MappIntelligenceTracking', () => {
         const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(mit);
         expect(requests.length).toBe(1);
         expect(requests[0]).toMatch(/^wt\?p=600,0,,,,,[0-9]{13},0,,&.+/);
+        expect(MappIntelligenceUnitUtil.checkStatistics(requests[0], '34')).toBeTruthy();
     });
 
     it('simple data - 2', async () => {
@@ -138,6 +141,7 @@ describe('MappIntelligenceTracking', () => {
         const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(mit);
         expect(requests.length).toBe(1);
         expect(requests[0]).toMatch(/^wt\?p=600,en\.page\.test,,,,,[0-9]{13},0,,&.+/);
+        expect(MappIntelligenceUnitUtil.checkStatistics(requests[0], '34')).toBeTruthy();
     });
 
     it('simple data - 4', async () => {
@@ -181,6 +185,7 @@ describe('MappIntelligenceTracking', () => {
         expect(request).toMatch(/.*&co=59\.99%3B49\.99%3B15\.99.*/);
         expect(request).toMatch(/.*&qn=1%3B5%3B1.*/);
         expect(request).toMatch(/.*&st=conf.*/);
+        expect(MappIntelligenceUnitUtil.checkStatistics(request, '34')).toBeTruthy();
     });
 
     it('data object - 1', async () => {
@@ -194,6 +199,7 @@ describe('MappIntelligenceTracking', () => {
         const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(mit);
         expect(requests.length).toBe(1);
         expect(requests[0]).toMatch(/^wt\?p=600,en\.page\.test,,,,,[0-9]{13},0,,&.+/);
+        expect(MappIntelligenceUnitUtil.checkStatistics(requests[0], '34')).toBeTruthy();
     });
 
     it('data object - 2', async () => {
@@ -269,6 +275,7 @@ describe('MappIntelligenceTracking', () => {
         expect(request).toMatch(/.*&qn=1%3B5%3B1.*/);
         expect(request).toMatch(/.*&st=conf.*/);
         expect(request).toMatch(/.*&cb767=%3B%3B%3B0.*/);
+        expect(MappIntelligenceUnitUtil.checkStatistics(request, '34')).toBeTruthy();
     });
 
     it('data object - 3', async () => {
@@ -288,6 +295,7 @@ describe('MappIntelligenceTracking', () => {
         const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(mit);
         expect(requests.length).toBe(1);
         expect(requests[0]).toMatch(/^wt\?p=600,0,,,,,[0-9]{13},0,,&.+/);
+        expect(MappIntelligenceUnitUtil.checkStatistics(requests[0], '34')).toBeTruthy();
     });
 
     it('set userId failed - 1', async () => {

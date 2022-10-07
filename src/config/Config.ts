@@ -193,6 +193,40 @@ export class Config {
         return this.requestURL.host;
     }
 
+    private getStatistics(): number {
+        let statistics = 0;
+
+        if (this.useParamsForDefaultPageName.length > 0) {
+            statistics += 1;
+        }
+
+        if (this.forceSSL) {
+            statistics += 2;
+        }
+
+        if (this.logger) {
+            statistics += 4;
+        }
+
+        if (this.consumerType === ConsumerType.FORK_CURL) {
+            statistics += 16;
+        }
+
+        if (this.consumerType === ConsumerType.HTTP_CLIENT) {
+            statistics += 32;
+        }
+
+        if (this.consumerType === ConsumerType.FILE) {
+            statistics += 128;
+        }
+
+        if (this.consumerType === ConsumerType.CUSTOM) {
+            statistics += 256;
+        }
+
+        return statistics;
+    }
+
     /**
      * @param str String to decoding
      */
@@ -543,6 +577,8 @@ export class Config {
             this.maxBatchSize = 1;
         }
 
+        const statistics = this.getStatistics();
+
         return {
             trackId: this.trackId,
             trackDomain: this.trackDomain,
@@ -566,7 +602,8 @@ export class Config {
             remoteAddress: this.remoteAddress,
             referrerURL: this.referrerURL,
             requestURL: this.requestURL,
-            cookie: this.cookie
+            cookie: this.cookie,
+            statistics: statistics
         };
     }
 }
