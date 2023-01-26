@@ -1,6 +1,6 @@
 {
     "name": "@mapp-intelligence/node",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "Mapp Intelligence - Server-side NodeJS tracking library",
     "author": "Mapp Digital c/o Webtrekk GmbH",
     "license": "MIT",

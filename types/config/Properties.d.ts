@@ -5,6 +5,10 @@ export declare class Properties {
     static readonly DEBUG: string;
     static readonly DOMAIN: string;
     static readonly USE_PARAMS_FOR_DEFAULT_PAGE_NAME: string;
+    static readonly CONTAINS_INCLUDE: string;
+    static readonly CONTAINS_EXCLUDE: string;
+    static readonly MATCHES_INCLUDE: string;
+    static readonly MATCHES_EXCLUDE: string;
     static readonly CONSUMER_TYPE: string;
     static readonly FILE_PATH: string;
     static readonly FILE_PREFIX: string;

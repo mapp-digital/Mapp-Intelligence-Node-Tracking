@@ -7,7 +7,11 @@ module.exports = {
         deactivate: false,
         debug: false,
         domain: ['sub.domain.tld', 'foo.bar', /test\.test\.com/],
-        useParamsForDefaultPageName: ['aa', 'bb', 'cc']
+        useParamsForDefaultPageName: ['aa', 'bb', 'cc', null, 8],
+        containsInclude: ["foo", null, 8, "bar"],
+        containsExclude: [null, 8, "test"],
+        matchesInclude: [".*foo.*", null, 8, /.*bar.*/],
+        matchesExclude: [".*test.*", null, 8]
     },
     consumer: {
         consumerType: MappIntelligenceConsumerType.FILE,

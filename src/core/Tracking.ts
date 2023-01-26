@@ -121,6 +121,11 @@ export class Tracking extends ACore {
             return false;
         }
 
+        if (this.deactivateByInAndExclude) {
+            this.logger.log(Messages.TRACKING_IS_DEACTIVATED_BY_IN_AND_EXCLUDE);
+            return false;
+        }
+
         return true;
     }
 

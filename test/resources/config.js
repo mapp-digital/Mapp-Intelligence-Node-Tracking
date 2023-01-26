@@ -7,7 +7,11 @@ module.exports = {
         deactivate: false,
         debug: false,
         domain: [],
-        useParamsForDefaultPageName: []
+        useParamsForDefaultPageName: [],
+        containsInclude: [],
+        containsExclude: [],
+        matchesInclude: [],
+        matchesExclude: []
     },
     consumer: {
         consumerType: MappIntelligenceConsumerType.HTTP_CLIENT,

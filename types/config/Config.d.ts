@@ -15,6 +15,7 @@ export declare class Config {
     private trackDomain;
     private domain;
     private deactivate;
+    private deactivateByInAndExclude;
     private logger;
     private consumer;
     private consumerType;
@@ -34,9 +35,16 @@ export declare class Config {
     private referrerURL;
     private requestURL;
     private cookie;
+    private containsInclude;
+    private containsExclude;
+    private matchesInclude;
+    private matchesExclude;
     constructor(tId?: string, tDomain?: string);
     private getOwnDomain;
     private getStatistics;
+    private checkContains;
+    private checkMatches;
+    private isDeactivateByInAndExclude;
     private static decode;
     private static getOrDefault;
     setTrackId(tId: string): Config;
@@ -68,6 +76,14 @@ export declare class Config {
     setForceSSL(fSSL: boolean): Config;
     setUseParamsForDefaultPageName(uParamsForDefaultPageName: Array<string | RegExp>): Config;
     addUseParamsForDefaultPageName(uParamsForDefaultPageName: string): Config;
+    setContainsInclude(containsInclude: Array<string | RegExp>): Config;
+    addContainsInclude(containsInclude: string): Config;
+    setContainsExclude(containsExclude: Array<string | RegExp>): Config;
+    addContainsExclude(containsExclude: string): Config;
+    setMatchesInclude(matchesInclude: Array<string | RegExp>): Config;
+    addMatchesInclude(matchesInclude: RegExp): Config;
+    setMatchesExclude(matchesExclude: Array<string | RegExp>): Config;
+    addMatchesExclude(matchesExclude: RegExp): Config;
     build(): {
         [key: string]: any;
     };

@@ -1,3 +1,11 @@
+<a name="0.0.5"></a>
+# 0.0.5 (2023-01-26)
+
+## Feature
+
+- Include method to suppress certain requests (see [Integration and Configuration](https://documentation.mapp.com/latest/en/integration-and-configuration-19126578.html))
+
+
 <a name="0.0.4"></a>
 # 0.0.4 (2022-10-17)
 

@@ -126,21 +126,53 @@
             }
         }
     }
-    var Tracking = (function () {
-        function Tracking(data) {
-            addProperties(this, data, Tracking.STRING_PROPERTIES, 'string');
-            addProperties(this, data, Tracking.BOOLEAN_PROPERTIES, 'boolean');
-            if (data.domain instanceof Array) {
-                this.domain = data.domain.filter(function (value) {
-                    return typeof value === 'string' || value instanceof RegExp;
-                });
-            }
-            if (data.useParamsForDefaultPageName instanceof Array) {
-                this.useParamsForDefaultPageName = data.useParamsForDefaultPageName.filter(function (value) {
-                    return typeof value === 'string';
-                });
+    function addArrayProperties(that, data, properties, filter) {
+        for (var _i = 0, properties_2 = properties; _i < properties_2.length; _i++) {
+            var prop = properties_2[_i];
+            if (data[prop] instanceof Array) {
+                that[prop] = data[prop].filter(filter);
             }
         }
+    }
+    var Tracking = (function () {
+        function Tracking(data) {
+            this.trackId = "";
+            this.trackDomain = "";
+            this.deactivate = false;
+            this.debug = false;
+            this.domain = [];
+            this.useParamsForDefaultPageName = [];
+            this.containsInclude = [];
+            this.containsExclude = [];
+            this.matchesInclude = [];
+            this.matchesExclude = [];
+            this.matchesIncludeRegExp = [];
+            this.matchesExcludeRegExp = [];
+            addProperties(this, data, Tracking.STRING_PROPERTIES, 'string');
+            addProperties(this, data, Tracking.BOOLEAN_PROPERTIES, 'boolean');
+            addArrayProperties(this, data, Tracking.ARRAY_STRING_PROPERTIES, function (value) {
+                return typeof value === 'string';
+            });
+            addArrayProperties(this, data, Tracking.ARRAY_STRING_REGEXP_PROPERTIES, function (value) {
+                return typeof value === 'string' || value instanceof RegExp;
+            });
+            Tracking.convertToRegExp(this.matchesInclude, this.matchesIncludeRegExp);
+            Tracking.convertToRegExp(this.matchesExclude, this.matchesExcludeRegExp);
+        }
+        Tracking.convertToRegExp = function (stringArray, regexpArray) {
+            for (var _i = 0, stringArray_1 = stringArray; _i < stringArray_1.length; _i++) {
+                var str = stringArray_1[_i];
+                try {
+                    var val = str;
+                    if (typeof val === 'string') {
+                        val = new RegExp(val);
+                    }
+                    regexpArray.push(val);
+                }
+                catch (e) {
+                }
+            }
+        };
         Tracking.prototype.build = function () {
             return {
                 trackId: this.trackId,
@@ -148,11 +180,21 @@
                 deactivate: this.deactivate,
                 debug: this.debug,
                 domain: this.domain,
-                useParamsForDefaultPageName: this.useParamsForDefaultPageName
+                useParamsForDefaultPageName: this.useParamsForDefaultPageName,
+                containsInclude: this.containsInclude,
+                containsExclude: this.containsExclude,
+                matchesInclude: this.matchesIncludeRegExp,
+                matchesExclude: this.matchesExcludeRegExp
             };
         };
         Tracking.STRING_PROPERTIES = ['trackId', 'trackDomain'];
         Tracking.BOOLEAN_PROPERTIES = ['deactivate', 'debug'];
+        Tracking.ARRAY_STRING_PROPERTIES = [
+            'useParamsForDefaultPageName', 'containsInclude', 'containsExclude'
+        ];
+        Tracking.ARRAY_STRING_REGEXP_PROPERTIES = [
+            'domain', 'matchesInclude', 'matchesExclude'
+        ];
         return Tracking;
     }());
     var Consumer = (function () {
@@ -263,6 +305,10 @@
         Properties.DEBUG = 'tracking.debug';
         Properties.DOMAIN = 'tracking.domain';
         Properties.USE_PARAMS_FOR_DEFAULT_PAGE_NAME = 'tracking.useParamsForDefaultPageName';
+        Properties.CONTAINS_INCLUDE = 'tracking.containsInclude';
+        Properties.CONTAINS_EXCLUDE = 'tracking.containsExclude';
+        Properties.MATCHES_INCLUDE = 'tracking.matchesInclude';
+        Properties.MATCHES_EXCLUDE = 'tracking.matchesExclude';
         Properties.CONSUMER_TYPE = 'consumer.consumerType';
         Properties.FILE_PATH = 'consumer.filePath';
         Properties.FILE_PREFIX = 'consumer.filePrefix';
@@ -286,6 +332,52 @@
         return DefaultLogger;
     }());
 
+    var Messages = (function () {
+        function Messages() {
+        }
+        Messages.REQUIRED_TRACK_ID_AND_DOMAIN = 'The Mapp Intelligence \'trackDomain\' and \'trackId\' are required to';
+        Messages.TO_LARGE_BATCH_SIZE = 'Batch size is larger than ${0} req. (${1} req.)';
+        Messages.TO_LARGE_PAYLOAD_SIZE = 'Payload size is larger than 24MB (${0}MB)';
+        Messages.GENERIC_ERROR = '${0} (${1})';
+        Messages.CREATE_NEW_LOG_FILE = 'Create new file ${0} (${1})';
+        Messages.USE_EXISTING_LOG_FILE = 'Use existing file ${0} (${1})';
+        Messages.DIRECTORY_NOT_EXIST = 'Directory not exist ${0}';
+        Messages.CANNOT_RENAME_TEMPORARY_FILE = 'Create new file, because cannot rename temporary file';
+        Messages.WRITE_BATCH_DATA = 'Write batch data in ${0} (${1} req.)';
+        Messages.EXECUTE_COMMAND = 'Execute command: ${0}';
+        Messages.SEND_BATCH_DATA = 'Send batch data to ${0} (${1} req.)';
+        Messages.BATCH_REQUEST_STATUS = 'Batch request responding the status code ${0}';
+        Messages.BATCH_RESPONSE_TEXT = '[${0}]: ${1}';
+        Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_COOKIE = Messages.REQUIRED_TRACK_ID_AND_DOMAIN + ' get user cookie';
+        Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_TRACKING = Messages.REQUIRED_TRACK_ID_AND_DOMAIN + ' track data';
+        Messages.TRACKING_IS_DEACTIVATED = 'Mapp Intelligence tracking is deactivated';
+        Messages.TRACKING_IS_DEACTIVATED_BY_IN_AND_EXCLUDE = Messages.TRACKING_IS_DEACTIVATED + ' by include / exclude';
+        Messages.SENT_BATCH_REQUESTS = 'Sent batch requests, current queue size is ${0} req.';
+        Messages.BATCH_REQUEST_FAILED = 'Batch request failed!';
+        Messages.CURRENT_QUEUE_STATUS = 'Batch of ${0} req. sent, current queue size is ${1} req.';
+        Messages.QUEUE_IS_EMPTY = 'MappIntelligenceQueue is empty';
+        Messages.ADD_THE_FOLLOWING_REQUEST_TO_QUEUE = 'Add the following request to queue (${0} req.): ${1}';
+        Messages.MAPP_INTELLIGENCE = '[Mapp Intelligence]: ';
+        Messages.REQUIRED_TRACK_ID = 'Argument \'-i\' or alternative \'--trackId\' are required';
+        Messages.REQUIRED_TRACK_DOMAIN = 'Argument \'-d\' or alternative \'--trackDomain\' are required';
+        Messages.UNSUPPORTED_OPTION = 'Unsupported config option';
+        Messages.OPTION_TRACK_ID = 'Enter your Mapp Intelligence track ID provided by Mapp.';
+        Messages.OPTION_TRACK_DOMAIN = 'Enter your Mapp Intelligence tracking domain.';
+        Messages.OPTION_CONFIG = 'Enter the path to your configuration file (*.json or *.js).';
+        Messages.OPTION_FILE_PATH = 'Enter the path to your request logging files.';
+        Messages.OPTION_FILE_PREFIX = 'Enter the prefix for your request logging files.';
+        Messages.OPTION_DEACTIVATE = 'Deactivate the tracking functionality.';
+        Messages.OPTION_HELP = 'Display the help (this text) and exit.';
+        Messages.OPTION_DEBUG = 'Activates the debug mode. The debug mode sends messages to the command line.';
+        Messages.OPTION_VERSION = 'Display version and exit.';
+        Messages.REQUEST_LOG_FILES_NOT_FOUND = 'Request log files "${0}" not found';
+        Messages.RENAME_EXPIRED_TEMPORARY_FILE = 'Rename expired temporary file into log file';
+        Messages.HELP_SYNTAX = 'node ./mapp-intelligence-java-cronjob.js';
+        Messages.HELP_HEADER = 'Send the logfile requests to the Mapp tracking server and delete your logfiles to keep it at a manageable size.\n';
+        Messages.HELP_FOOTER = '';
+        return Messages;
+    }());
+
     var Config = (function () {
         function Config(tId, tDomain) {
             this.PORT_80 = '80';
@@ -296,6 +388,7 @@
             this.trackDomain = '';
             this.domain = [];
             this.deactivate = false;
+            this.deactivateByInAndExclude = false;
             this.consumerType = ConsumerType.HTTP_CLIENT;
             this.filePath = '';
             this.filePrefix = '';
@@ -312,6 +405,10 @@
             this.remoteAddress = '';
             this.referrerURL = '';
             this.cookie = {};
+            this.containsInclude = [];
+            this.containsExclude = [];
+            this.matchesInclude = [];
+            this.matchesExclude = [];
             if (arguments.length === 2) {
                 this.trackId = (tId) ? tId : this.trackId;
                 this.trackDomain = (tDomain) ? tDomain : this.trackDomain;
@@ -334,7 +431,11 @@
                     .setMaxFileLines(prop.getIntegerProperty(Properties.MAX_FILE_LINES, this.maxFileLines))
                     .setMaxFileDuration(prop.getIntegerProperty(Properties.MAX_FILE_DURATION, this.maxFileDuration))
                     .setMaxFileSize(prop.getIntegerProperty(Properties.MAX_FILE_SIZE, this.maxFileSize))
-                    .setForceSSL(prop.getBooleanProperty(Properties.FORCE_SSL, true));
+                    .setForceSSL(prop.getBooleanProperty(Properties.FORCE_SSL, true))
+                    .setContainsInclude(prop.getListProperty(Properties.CONTAINS_INCLUDE, this.containsInclude))
+                    .setContainsExclude(prop.getListProperty(Properties.CONTAINS_EXCLUDE, this.containsExclude))
+                    .setMatchesInclude(prop.getListProperty(Properties.MATCHES_INCLUDE, this.matchesInclude))
+                    .setMatchesExclude(prop.getListProperty(Properties.MATCHES_EXCLUDE, this.matchesExclude));
             }
         }
         Config.prototype.getOwnDomain = function () {
@@ -371,6 +472,52 @@
                 statistics += 256;
             }
             return statistics;
+        };
+        Config.prototype.checkContains = function (list) {
+            for (var _i = 0, list_1 = list; _i < list_1.length; _i++) {
+                var s = list_1[_i];
+                if (this.requestURL.href.indexOf(s) !== -1) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        Config.prototype.checkMatches = function (list) {
+            for (var _i = 0, list_2 = list; _i < list_2.length; _i++) {
+                var s = list_2[_i];
+                try {
+                    if (this.requestURL.href.search(s) !== -1) {
+                        return true;
+                    }
+                }
+                catch (e) {
+                    this.logger.log(Messages.GENERIC_ERROR, e.name, e.message);
+                }
+            }
+            return false;
+        };
+        Config.prototype.isDeactivateByInAndExclude = function () {
+            if (!this.requestURL) {
+                return false;
+            }
+            var isContainsIncludeEmpty = this.containsInclude.length === 0;
+            var isMatchesIncludeEmpty = this.matchesInclude.length === 0;
+            var isContainsExcludeEmpty = this.containsExclude.length === 0;
+            var isMatchesExcludeEmpty = this.matchesExclude.length === 0;
+            var isIncluded = isContainsIncludeEmpty && isMatchesIncludeEmpty;
+            if (!isContainsIncludeEmpty) {
+                isIncluded = this.checkContains(this.containsInclude);
+            }
+            if (!isIncluded && !isMatchesIncludeEmpty) {
+                isIncluded = this.checkMatches(this.matchesInclude);
+            }
+            if (isIncluded && !isContainsExcludeEmpty) {
+                isIncluded = !this.checkContains(this.containsExclude);
+            }
+            if (isIncluded && !isMatchesExcludeEmpty) {
+                isIncluded = !this.checkMatches(this.matchesExclude);
+            }
+            return !isIncluded;
         };
         Config.decode = function (str) {
             if (str) {
@@ -519,6 +666,46 @@
             }
             return this;
         };
+        Config.prototype.setContainsInclude = function (containsInclude) {
+            this.containsInclude = Config.getOrDefault(containsInclude, this.containsInclude);
+            return this;
+        };
+        Config.prototype.addContainsInclude = function (containsInclude) {
+            if (containsInclude) {
+                this.containsInclude.push(containsInclude);
+            }
+            return this;
+        };
+        Config.prototype.setContainsExclude = function (containsExclude) {
+            this.containsExclude = Config.getOrDefault(containsExclude, this.containsExclude);
+            return this;
+        };
+        Config.prototype.addContainsExclude = function (containsExclude) {
+            if (containsExclude) {
+                this.containsExclude.push(containsExclude);
+            }
+            return this;
+        };
+        Config.prototype.setMatchesInclude = function (matchesInclude) {
+            this.matchesInclude = Config.getOrDefault(matchesInclude, this.matchesInclude);
+            return this;
+        };
+        Config.prototype.addMatchesInclude = function (matchesInclude) {
+            if (matchesInclude) {
+                this.matchesInclude.push(matchesInclude);
+            }
+            return this;
+        };
+        Config.prototype.setMatchesExclude = function (matchesExclude) {
+            this.matchesExclude = Config.getOrDefault(matchesExclude, this.matchesExclude);
+            return this;
+        };
+        Config.prototype.addMatchesExclude = function (matchesExclude) {
+            if (matchesExclude) {
+                this.matchesExclude.push(matchesExclude);
+            }
+            return this;
+        };
         Config.prototype.build = function () {
             if (this.domain.length === 0) {
                 this.domain.push(this.getOwnDomain());
@@ -532,12 +719,16 @@
                 }
                 this.maxBatchSize = 1;
             }
+            if (this.containsInclude.length > 0 || this.containsExclude.length > 0 || this.matchesInclude.length > 0 || this.matchesExclude.length > 0) {
+                this.deactivateByInAndExclude = this.isDeactivateByInAndExclude();
+            }
             var statistics = this.getStatistics();
             return {
                 trackId: this.trackId,
                 trackDomain: this.trackDomain,
                 domain: this.domain,
                 deactivate: this.deactivate,
+                deactivateByInAndExclude: this.deactivateByInAndExclude,
                 logger: this.logger,
                 consumer: this.consumer,
                 consumerType: this.consumerType,
@@ -557,6 +748,10 @@
                 referrerURL: this.referrerURL,
                 requestURL: this.requestURL,
                 cookie: this.cookie,
+                containsInclude: this.containsInclude,
+                containsExclude: this.containsExclude,
+                matchesInclude: this.matchesInclude,
+                matchesExclude: this.matchesExclude,
                 statistics: statistics
             };
         };
@@ -643,51 +838,6 @@
             to[j] = from[i];
         return to;
     }
-
-    var Messages = (function () {
-        function Messages() {
-        }
-        Messages.REQUIRED_TRACK_ID_AND_DOMAIN = 'The Mapp Intelligence \'trackDomain\' and \'trackId\' are required to';
-        Messages.TO_LARGE_BATCH_SIZE = 'Batch size is larger than ${0} req. (${1} req.)';
-        Messages.TO_LARGE_PAYLOAD_SIZE = 'Payload size is larger than 24MB (${0}MB)';
-        Messages.GENERIC_ERROR = '${0} (${1})';
-        Messages.CREATE_NEW_LOG_FILE = 'Create new file ${0} (${1})';
-        Messages.USE_EXISTING_LOG_FILE = 'Use existing file ${0} (${1})';
-        Messages.DIRECTORY_NOT_EXIST = 'Directory not exist ${0}';
-        Messages.CANNOT_RENAME_TEMPORARY_FILE = 'Create new file, because cannot rename temporary file';
-        Messages.WRITE_BATCH_DATA = 'Write batch data in ${0} (${1} req.)';
-        Messages.EXECUTE_COMMAND = 'Execute command: ${0}';
-        Messages.SEND_BATCH_DATA = 'Send batch data to ${0} (${1} req.)';
-        Messages.BATCH_REQUEST_STATUS = 'Batch request responding the status code ${0}';
-        Messages.BATCH_RESPONSE_TEXT = '[${0}]: ${1}';
-        Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_COOKIE = Messages.REQUIRED_TRACK_ID_AND_DOMAIN + ' get user cookie';
-        Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_TRACKING = Messages.REQUIRED_TRACK_ID_AND_DOMAIN + ' track data';
-        Messages.TRACKING_IS_DEACTIVATED = 'Mapp Intelligence tracking is deactivated';
-        Messages.SENT_BATCH_REQUESTS = 'Sent batch requests, current queue size is ${0} req.';
-        Messages.BATCH_REQUEST_FAILED = 'Batch request failed!';
-        Messages.CURRENT_QUEUE_STATUS = 'Batch of ${0} req. sent, current queue size is ${1} req.';
-        Messages.QUEUE_IS_EMPTY = 'MappIntelligenceQueue is empty';
-        Messages.ADD_THE_FOLLOWING_REQUEST_TO_QUEUE = 'Add the following request to queue (${0} req.): ${1}';
-        Messages.MAPP_INTELLIGENCE = '[Mapp Intelligence]: ';
-        Messages.REQUIRED_TRACK_ID = 'Argument \'-i\' or alternative \'--trackId\' are required';
-        Messages.REQUIRED_TRACK_DOMAIN = 'Argument \'-d\' or alternative \'--trackDomain\' are required';
-        Messages.UNSUPPORTED_OPTION = 'Unsupported config option';
-        Messages.OPTION_TRACK_ID = 'Enter your Mapp Intelligence track ID provided by Mapp.';
-        Messages.OPTION_TRACK_DOMAIN = 'Enter your Mapp Intelligence tracking domain.';
-        Messages.OPTION_CONFIG = 'Enter the path to your configuration file (*.json or *.js).';
-        Messages.OPTION_FILE_PATH = 'Enter the path to your request logging files.';
-        Messages.OPTION_FILE_PREFIX = 'Enter the prefix for your request logging files.';
-        Messages.OPTION_DEACTIVATE = 'Deactivate the tracking functionality.';
-        Messages.OPTION_HELP = 'Display the help (this text) and exit.';
-        Messages.OPTION_DEBUG = 'Activates the debug mode. The debug mode sends messages to the command line.';
-        Messages.OPTION_VERSION = 'Display version and exit.';
-        Messages.REQUEST_LOG_FILES_NOT_FOUND = 'Request log files "${0}" not found';
-        Messages.RENAME_EXPIRED_TEMPORARY_FILE = 'Rename expired temporary file into log file';
-        Messages.HELP_SYNTAX = 'node ./mapp-intelligence-java-cronjob.js';
-        Messages.HELP_HEADER = 'Send the logfile requests to the Mapp tracking server and delete your logfiles to keep it at a manageable size.\n';
-        Messages.HELP_FOOTER = '';
-        return Messages;
-    }());
 
     var DebugLogger = (function () {
         function DebugLogger(l) {
@@ -1647,6 +1797,7 @@
             var l = _this.config['logger'];
             _this.logger = new DebugLogger(l);
             _this.deactivate = _this.config['deactivate'];
+            _this.deactivateByInAndExclude = _this.config['deactivateByInAndExclude'];
             _this.trackId = _this.config['trackId'];
             _this.trackDomain = _this.config['trackDomain'];
             return _this;
@@ -1670,7 +1821,7 @@
             }
             return this.queue.getUserIdCookie(pixelVersion, context);
         };
-        ACore.VERSION = '0.0.4';
+        ACore.VERSION = '0.0.5';
         ACore.V4 = 'v4';
         ACore.V5 = 'v5';
         ACore.SMART = 'smart';
@@ -1869,6 +2020,10 @@
             }
             if (!this.trackId || !this.trackDomain) {
                 this.logger.log(Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_TRACKING);
+                return false;
+            }
+            if (this.deactivateByInAndExclude) {
+                this.logger.log(Messages.TRACKING_IS_DEACTIVATED_BY_IN_AND_EXCLUDE);
                 return false;
             }
             return true;

@@ -37,6 +37,12 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
         expect(34).toBe(config['statistics']);
+        expect(false).toBe(config['deactivate']);
+        expect(false).toBe(config['deactivateByInAndExclude']);
+        expect(0).toBe(config['containsInclude'].length);
+        expect(0).toBe(config['containsExclude'].length);
+        expect(0).toBe(config['matchesInclude'].length);
+        expect(0).toBe(config['matchesExclude'].length);
     });
 
     it('null config', async () => {
@@ -55,7 +61,11 @@ describe('MappIntelligenceConfig', () => {
             .setConsumer(null)
             .setFilePath(null)
             .setFilePrefix(null)
-            .setUseParamsForDefaultPageName(null).addUseParamsForDefaultPageName(null);
+            .setUseParamsForDefaultPageName(null).addUseParamsForDefaultPageName(null)
+            .setContainsInclude(null).addContainsInclude(null)
+            .setContainsExclude(null).addContainsExclude(null)
+            .setMatchesInclude(null).addMatchesInclude(null)
+            .setMatchesExclude(null).addMatchesExclude(null);
         const config: { [key: string]: any } = mic.build();
 
         expect('').toBe(config['trackId']);
@@ -79,6 +89,12 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
         expect(34).toBe(config['statistics']);
+        expect(false).toBe(config['deactivate']);
+        expect(false).toBe(config['deactivateByInAndExclude']);
+        expect(0).toBe(config['containsInclude'].length);
+        expect(0).toBe(config['containsExclude'].length);
+        expect(0).toBe(config['matchesInclude'].length);
+        expect(0).toBe(config['matchesExclude'].length);
     });
 
     it('invalid config file', async () => {
@@ -107,6 +123,12 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
         expect(34).toBe(config['statistics']);
+        expect(false).toBe(config['deactivate']);
+        expect(false).toBe(config['deactivateByInAndExclude']);
+        expect(0).toBe(config['containsInclude'].length);
+        expect(0).toBe(config['containsExclude'].length);
+        expect(0).toBe(config['matchesInclude'].length);
+        expect(0).toBe(config['matchesExclude'].length);
     });
 
     it('empty config file', async () => {
@@ -135,6 +157,12 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
         expect(34).toBe(config['statistics']);
+        expect(false).toBe(config['deactivate']);
+        expect(false).toBe(config['deactivateByInAndExclude']);
+        expect(0).toBe(config['containsInclude'].length);
+        expect(0).toBe(config['containsExclude'].length);
+        expect(0).toBe(config['matchesInclude'].length);
+        expect(0).toBe(config['matchesExclude'].length);
     });
 
     it('JSON config file - 1', async () => {
@@ -163,6 +191,12 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
         expect(34).toBe(config['statistics']);
+        expect(false).toBe(config['deactivate']);
+        expect(false).toBe(config['deactivateByInAndExclude']);
+        expect(0).toBe(config['containsInclude'].length);
+        expect(0).toBe(config['containsExclude'].length);
+        expect(0).toBe(config['matchesInclude'].length);
+        expect(0).toBe(config['matchesExclude'].length);
     });
 
     it('JSON config file - 2', async () => {
@@ -191,6 +225,12 @@ describe('MappIntelligenceConfig', () => {
         expect(config['filePath']).toMatch(/^.+$/);
         expect('MappIntelligenceRequests').toBe(config['filePrefix']);
         expect(131).toBe(config['statistics']);
+        expect(false).toBe(config['deactivate']);
+        expect(false).toBe(config['deactivateByInAndExclude']);
+        expect(2).toBe(config['containsInclude'].length);
+        expect(1).toBe(config['containsExclude'].length);
+        expect(2).toBe(config['matchesInclude'].length);
+        expect(1).toBe(config['matchesExclude'].length);
     });
 
     it('JSON config file - 3', async () => {
@@ -219,6 +259,12 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
         expect(18).toBe(config['statistics']);
+        expect(false).toBe(config['deactivate']);
+        expect(false).toBe(config['deactivateByInAndExclude']);
+        expect(0).toBe(config['containsInclude'].length);
+        expect(0).toBe(config['containsExclude'].length);
+        expect(0).toBe(config['matchesInclude'].length);
+        expect(0).toBe(config['matchesExclude'].length);
     });
 
     it('JSON config file - 4', async () => {
@@ -247,6 +293,12 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
         expect(34).toBe(config['statistics']);
+        expect(false).toBe(config['deactivate']);
+        expect(false).toBe(config['deactivateByInAndExclude']);
+        expect(0).toBe(config['containsInclude'].length);
+        expect(0).toBe(config['containsExclude'].length);
+        expect(0).toBe(config['matchesInclude'].length);
+        expect(0).toBe(config['matchesExclude'].length);
     });
 
     it('overwrite JSON config file', async () => {
@@ -264,7 +316,10 @@ describe('MappIntelligenceConfig', () => {
             .setForceSSL(false)
             .setUseParamsForDefaultPageName([])
             .addUseParamsForDefaultPageName('foo')
-            .addUseParamsForDefaultPageName('bar');
+            .addUseParamsForDefaultPageName('bar')
+            .setContainsInclude([])
+            .addContainsInclude('foo')
+            .addContainsInclude('bar');
 
         const config: { [key: string]: any } = mic.build();
         expect('111111111111111').toBe(config['trackId']);
@@ -288,6 +343,12 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
         expect(33).toBe(config['statistics']);
+        expect(false).toBe(config['deactivate']);
+        expect(false).toBe(config['deactivateByInAndExclude']);
+        expect(2).toBe(config['containsInclude'].length);
+        expect(0).toBe(config['containsExclude'].length);
+        expect(0).toBe(config['matchesInclude'].length);
+        expect(0).toBe(config['matchesExclude'].length);
     });
 
     it('JS config file - 1', async () => {
@@ -316,6 +377,12 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
         expect(34).toBe(config['statistics']);
+        expect(false).toBe(config['deactivate']);
+        expect(false).toBe(config['deactivateByInAndExclude']);
+        expect(0).toBe(config['containsInclude'].length);
+        expect(0).toBe(config['containsExclude'].length);
+        expect(0).toBe(config['matchesInclude'].length);
+        expect(0).toBe(config['matchesExclude'].length);
     });
 
     it('JS config file - 2', async () => {
@@ -344,6 +411,12 @@ describe('MappIntelligenceConfig', () => {
         expect(config['filePath']).toMatch(/^.+$/);
         expect('MappIntelligenceRequests').toBe(config['filePrefix']);
         expect(131).toBe(config['statistics']);
+        expect(false).toBe(config['deactivate']);
+        expect(false).toBe(config['deactivateByInAndExclude']);
+        expect(2).toBe(config['containsInclude'].length);
+        expect(1).toBe(config['containsExclude'].length);
+        expect(2).toBe(config['matchesInclude'].length);
+        expect(1).toBe(config['matchesExclude'].length);
     });
 
     it('overwrite JS config file', async () => {
@@ -361,7 +434,10 @@ describe('MappIntelligenceConfig', () => {
             .setForceSSL(false)
             .setUseParamsForDefaultPageName([])
             .addUseParamsForDefaultPageName('foo')
-            .addUseParamsForDefaultPageName('bar');
+            .addUseParamsForDefaultPageName('bar')
+            .setContainsInclude([])
+            .addContainsInclude('foo')
+            .addContainsInclude('bar');
 
         const config: { [key: string]: any } = mic.build();
         expect('111111111111111').toBe(config['trackId']);
@@ -385,6 +461,12 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['filePath']);
         expect('').toBe(config['filePrefix']);
         expect(33).toBe(config['statistics']);
+        expect(false).toBe(config['deactivate']);
+        expect(false).toBe(config['deactivateByInAndExclude']);
+        expect(2).toBe(config['containsInclude'].length);
+        expect(0).toBe(config['containsExclude'].length);
+        expect(0).toBe(config['matchesInclude'].length);
+        expect(0).toBe(config['matchesExclude'].length);
     });
 
     it('config with trackId and trackDomain', async () => {
@@ -560,5 +642,297 @@ describe('MappIntelligenceConfig', () => {
         expect('bar').toBe(config['cookie']['foo']);
         expect('123').toBe(config['cookie']['test']);
         expect('cba').toBe(config['cookie']['abc']);
+    });
+
+    it('testConfigWithContainsInclude', async () => {
+        const mappIntelligenceConfig = new MappIntelligenceConfig();
+        mappIntelligenceConfig.setContainsInclude([])
+            .addContainsInclude('foo.bar.com')
+            .addContainsInclude('www.mappIntelligence.com')
+            .addContainsInclude('sub.domain.tld');
+
+        const config: { [key: string]: any } = mappIntelligenceConfig.build();
+        expect('foo.bar.com').toBe(config['containsInclude'][0]);
+        expect('www.mappIntelligence.com').toBe(config['containsInclude'][1]);
+        expect('sub.domain.tld').toBe(config['containsInclude'][2]);
+    });
+
+    it('testConfigWithContainsExclude', async () => {
+        const mappIntelligenceConfig = new MappIntelligenceConfig();
+        mappIntelligenceConfig.setContainsExclude([])
+            .addContainsExclude('foo.bar.com')
+            .addContainsExclude('www.mappIntelligence.com')
+            .addContainsExclude('sub.domain.tld');
+
+        const config: { [key: string]: any } = mappIntelligenceConfig.build();
+        expect('foo.bar.com').toBe(config['containsExclude'][0]);
+        expect('www.mappIntelligence.com').toBe(config['containsExclude'][1]);
+        expect('sub.domain.tld').toBe(config['containsExclude'][2]);
+    });
+
+    it('testConfigWithMatchesInclude', async () => {
+        const mappIntelligenceConfig = new MappIntelligenceConfig();
+        mappIntelligenceConfig.setMatchesInclude([])
+            .addMatchesInclude(/foo\.bar\.com/)
+            .addMatchesInclude(/www\.mappIntelligence\.com/)
+            .addMatchesInclude(/sub\.domain\.tld/);
+
+        const config: { [key: string]: any } = mappIntelligenceConfig.build();
+        expect(/foo\.bar\.com/.toString()).toBe(config['matchesInclude'][0].toString());
+        expect(/www\.mappIntelligence\.com/.toString()).toBe(config['matchesInclude'][1].toString());
+        expect(/sub\.domain\.tld/.toString()).toBe(config['matchesInclude'][2].toString());
+    });
+
+    it('testConfigWithMatchesExclude', async () => {
+        const mappIntelligenceConfig = new MappIntelligenceConfig();
+        mappIntelligenceConfig.setMatchesExclude([])
+            .addMatchesExclude(/foo\.bar\.com/)
+            .addMatchesExclude(/www\.mappIntelligence\.com/)
+            .addMatchesExclude(/sub\.domain\.tld/);
+
+        const config: { [key: string]: any } = mappIntelligenceConfig.build();
+        expect(/foo\.bar\.com/.toString()).toBe(config['matchesExclude'][0].toString());
+        expect(/www\.mappIntelligence\.com/.toString()).toBe(config['matchesExclude'][1].toString());
+        expect(/sub\.domain\.tld/.toString()).toBe(config['matchesExclude'][2].toString());
+    });
+
+    it('testRequestWithContainsInclude1', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsInclude('sub.domain.tld')
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(false).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsInclude2', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsInclude('sub.domain1.tld')
+            .addContainsInclude('sub.domain2.tld')
+            .addContainsInclude('sub.domain3.tld')
+            .addContainsInclude('sub.domain.tld')
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(false).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsInclude3', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsInclude('sub.domain1.tld')
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithMatchesInclude1', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addMatchesInclude(/sub\.domain\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(false).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithMatchesInclude2', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addMatchesInclude(/sub\.domain1\.tld/)
+            .addMatchesInclude(/sub\.domain2\.tld/)
+            .addMatchesInclude(/sub\.domain3\.tld/)
+            .addMatchesInclude(/sub\.domain\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(false).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithMatchesInclude3', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addMatchesInclude(/sub\.domain1\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsAndMatchesInclude1', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsInclude('sub.domain.tld')
+            .addMatchesInclude(/sub\.domain1\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(false).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsAndMatchesInclude2', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsInclude('sub.domain1.tld')
+            .addMatchesInclude(/sub\.domain\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(false).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsAndMatchesInclude3', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsInclude('sub.domain1.tld')
+            .addMatchesInclude(/sub\.domain1\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsExclude1', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsExclude('sub.domain.tld')
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsExclude2', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsExclude('sub.domain1.tld')
+            .addContainsExclude('sub.domain2.tld')
+            .addContainsExclude('sub.domain3.tld')
+            .addContainsExclude('sub.domain.tld')
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsExclude3', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsExclude('sub.domain1.tld')
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(false).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithMatchesExclude1', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addMatchesExclude(/sub\.domain\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithMatchesExclude2', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addMatchesExclude(/sub\.domain1\.tld/)
+            .addMatchesExclude(/sub\.domain2\.tld/)
+            .addMatchesExclude(/sub\.domain3\.tld/)
+            .addMatchesExclude(/sub\.domain\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithMatchesExclude3', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addMatchesExclude(/sub\.domain1\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(false).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsAndMatchesExclude1', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsExclude('sub.domain.tld')
+            .addMatchesExclude(/sub\.domain1\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsAndMatchesExclude2', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsExclude('sub.domain1.tld')
+            .addMatchesExclude(/sub\.domain\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsAndMatchesExclude3', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsExclude('sub.domain1.tld')
+            .addMatchesExclude(/sub\.domain1\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(false).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsIncludeAndExclude1', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsInclude('sub.domain.tld')
+            .addContainsExclude('.html')
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsIncludeAndExclude2', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsInclude('sub.domain.tld')
+            .addContainsExclude('sub.domain1.tld')
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(false).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithContainsIncludeAndExclude3', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addContainsInclude('sub.domain1.tld')
+            .addContainsExclude('sub.domain1.tld')
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithMatchesIncludeAndExclude1', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addMatchesInclude(/sub\.domain\.tld/)
+            .addMatchesExclude(/\.html/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithMatchesIncludeAndExclude2', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addMatchesInclude(/sub\.domain\.tld/)
+            .addMatchesExclude(/sub\.domain1\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(false).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('testRequestWithMatchesIncludeAndExclude3', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .addMatchesInclude(/sub\.domain1\.tld/)
+            .addMatchesExclude(/sub\.domain1\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const config = mappIntelligenceConfig.build();
+        expect(true).toBe(config['deactivateByInAndExclude']);
     });
 });

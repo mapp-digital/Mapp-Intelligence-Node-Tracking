@@ -15,6 +15,7 @@ export declare class Messages {
     static readonly REQUIRED_TRACK_ID_AND_DOMAIN_FOR_COOKIE: string;
     static readonly REQUIRED_TRACK_ID_AND_DOMAIN_FOR_TRACKING: string;
     static readonly TRACKING_IS_DEACTIVATED: string;
+    static readonly TRACKING_IS_DEACTIVATED_BY_IN_AND_EXCLUDE: string;
     static readonly SENT_BATCH_REQUESTS: string;
     static readonly BATCH_REQUEST_FAILED: string;
     static readonly CURRENT_QUEUE_STATUS: string;

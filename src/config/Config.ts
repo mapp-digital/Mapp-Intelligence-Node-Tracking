@@ -5,6 +5,7 @@ import {ConsumerType} from '../consumer/ConsumerType';
 import {ConfigProperties} from './ConfigProperties';
 import {Properties} from './Properties';
 import {DefaultLogger} from './DefaultLogger';
+import {Messages} from '../Messages';
 
 export class Config {
     /**
@@ -64,6 +65,10 @@ export class Config {
      * Deactivate the tracking functionality.
      */
     private deactivate: boolean = false;
+    /**
+     * Deactivate the tracking functionality.
+     */
+    private deactivateByInAndExclude: boolean = false;
     /**
      * Activates the debug mode.
      */
@@ -140,6 +145,22 @@ export class Config {
      * Map with cookies.
      */
     private cookie: {[key: string]: string} = {};
+    /**
+     * If the string is contained in the request URL, the request is measured.
+     */
+    private containsInclude: Array<string> = [];
+    /**
+     * If the string is contained in the request URL, the request isn't measured.
+     */
+    private containsExclude: Array<string> = [];
+    /**
+     * If the regular expression matches the request URL, the request is measured.
+     */
+    private matchesInclude: Array<RegExp> = [];
+    /**
+     * If the regular expression matches the request URL, the request isn't measured.
+     */
+    private matchesExclude: Array<RegExp> = [];
 
     /**
      * @param [tId] Enter your Mapp Intelligence track ID provided by Mapp or path to the configuration file (*.json).
@@ -173,7 +194,11 @@ export class Config {
                 .setMaxFileLines(prop.getIntegerProperty(Properties.MAX_FILE_LINES, this.maxFileLines))
                 .setMaxFileDuration(prop.getIntegerProperty(Properties.MAX_FILE_DURATION, this.maxFileDuration))
                 .setMaxFileSize(prop.getIntegerProperty(Properties.MAX_FILE_SIZE, this.maxFileSize))
-                .setForceSSL(prop.getBooleanProperty(Properties.FORCE_SSL, true));
+                .setForceSSL(prop.getBooleanProperty(Properties.FORCE_SSL, true))
+                .setContainsInclude(prop.getListProperty(Properties.CONTAINS_INCLUDE, this.containsInclude))
+                .setContainsExclude(prop.getListProperty(Properties.CONTAINS_EXCLUDE, this.containsExclude))
+                .setMatchesInclude(prop.getListProperty(Properties.MATCHES_INCLUDE, this.matchesInclude))
+                .setMatchesExclude(prop.getListProperty(Properties.MATCHES_EXCLUDE, this.matchesExclude));
         }
     }
 
@@ -226,6 +251,80 @@ export class Config {
 
         return statistics;
     }
+
+    /**
+     * @param list List of strings, if is contained in the request URL, the request is/isn't measured
+     *
+     * @return boolean
+     */
+    private checkContains(list: Array<string>): boolean {
+        for (let s of list) {
+            if (this.requestURL.href.indexOf(s) !== -1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param list List of regular expressions, if it matches the request URL, the request is/isn't measured
+     *
+     * @return boolean
+     */
+    private  checkMatches(list: Array<RegExp>): boolean {
+        for (let s of list) {
+            try {
+                if (this.requestURL.href.search(s) !== -1) {
+                    return true;
+                }
+            } catch (e) {
+                /* istanbul ignore next */
+                this.logger.log(Messages.GENERIC_ERROR, e.name, e.message);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return boolean
+     */
+    private isDeactivateByInAndExclude(): boolean {
+        if (!this.requestURL) {
+            return false;
+        }
+
+        const isContainsIncludeEmpty: boolean = this.containsInclude.length === 0;
+        const isMatchesIncludeEmpty: boolean = this.matchesInclude.length === 0;
+        const isContainsExcludeEmpty: boolean = this.containsExclude.length === 0;
+        const isMatchesExcludeEmpty: boolean = this.matchesExclude.length === 0;
+
+        let isIncluded: boolean = isContainsIncludeEmpty && isMatchesIncludeEmpty;
+
+        if (!isContainsIncludeEmpty) {
+            isIncluded = this.checkContains(this.containsInclude);
+        }
+
+        if (!isIncluded && !isMatchesIncludeEmpty) {
+            isIncluded = this.checkMatches(this.matchesInclude);
+        }
+
+        if (isIncluded && !isContainsExcludeEmpty) {
+            isIncluded = !this.checkContains(this.containsExclude);
+        }
+
+        if (isIncluded && !isMatchesExcludeEmpty) {
+            isIncluded = !this.checkMatches(this.matchesExclude);
+        }
+
+        return !isIncluded;
+    }
+
+
+
+
+
 
     /**
      * @param str String to decoding
@@ -558,6 +657,94 @@ export class Config {
     }
 
     /**
+     * @param containsInclude Specify the strings that must be contained in the request URL to measure the request
+     *
+     * @return Config
+     */
+    public setContainsInclude(containsInclude: Array<string | RegExp>): Config {
+        this.containsInclude = Config.getOrDefault(containsInclude, this.containsInclude);
+        return this;
+    }
+
+    /**
+     * @param containsInclude Specify the string that must be contained in the request URL to measure the request
+     *
+     * @return Config
+     */
+    public addContainsInclude(containsInclude: string): Config {
+        if (containsInclude) {
+            this.containsInclude.push(containsInclude);
+        }
+        return this;
+    }
+
+    /**
+     * @param containsExclude Specify the strings that must be contained in the request URL to not measure the request
+     *
+     * @return Config
+     */
+    public setContainsExclude(containsExclude: Array<string | RegExp>): Config {
+        this.containsExclude = Config.getOrDefault(containsExclude, this.containsExclude);
+        return this;
+    }
+
+    /**
+     * @param containsExclude Specify the string that must be contained in the request URL to not measure the request
+     *
+     * @return Config
+     */
+    public addContainsExclude(containsExclude: string): Config {
+        if (containsExclude) {
+            this.containsExclude.push(containsExclude);
+        }
+        return this;
+    }
+
+    /**
+     * @param matchesInclude Specify the regular expressions that must be match the request URL to measure the request
+     *
+     * @return Config
+     */
+    public setMatchesInclude(matchesInclude: Array<string | RegExp>): Config {
+        this.matchesInclude = Config.getOrDefault(matchesInclude, this.matchesInclude);
+        return this;
+    }
+
+    /**
+     * @param matchesInclude Specify the regular expression that must be match the request URL to measure the request
+     *
+     * @return Config
+     */
+    public addMatchesInclude(matchesInclude: RegExp): Config {
+        if (matchesInclude) {
+            this.matchesInclude.push(matchesInclude);
+        }
+        return this;
+    }
+
+    /**
+     * @param matchesExclude Specify the regular expressions that must be match the request URL to not measure the request
+     *
+     * @return Config
+     */
+    public setMatchesExclude(matchesExclude: Array<string | RegExp>): Config {
+        this.matchesExclude = Config.getOrDefault(matchesExclude, this.matchesExclude);
+        return this;
+    }
+
+    /**
+     * @param matchesExclude Specify the regular expression that must be match the request URL to not measure the request
+     *
+     * @return Config
+     */
+    public addMatchesExclude(matchesExclude: RegExp): Config {
+        if (matchesExclude) {
+            this.matchesExclude.push(matchesExclude);
+        }
+        return this;
+    }
+
+    /**
      * @return {[key: string]: any}
      */
     public build(): {[key: string]: any} {
@@ -577,6 +764,10 @@ export class Config {
             this.maxBatchSize = 1;
         }
 
+        if (this.containsInclude.length > 0 || this.containsExclude.length > 0 || this.matchesInclude.length > 0 || this.matchesExclude.length > 0) {
+            this.deactivateByInAndExclude = this.isDeactivateByInAndExclude();
+        }
+
         const statistics = this.getStatistics();
 
         return {
@@ -584,6 +775,7 @@ export class Config {
             trackDomain: this.trackDomain,
             domain: this.domain,
             deactivate: this.deactivate,
+            deactivateByInAndExclude: this.deactivateByInAndExclude,
             logger: this.logger,
             consumer: this.consumer,
             consumerType: this.consumerType,
@@ -603,6 +795,10 @@ export class Config {
             referrerURL: this.referrerURL,
             requestURL: this.requestURL,
             cookie: this.cookie,
+            containsInclude: this.containsInclude,
+            containsExclude: this.containsExclude,
+            matchesInclude: this.matchesInclude,
+            matchesExclude: this.matchesExclude,
             statistics: statistics
         };
     }

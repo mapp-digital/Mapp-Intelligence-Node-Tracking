@@ -12,6 +12,7 @@ export declare abstract class ACore extends ACleaner {
     static readonly SERVER_SIDE_COOKIE: string;
     static readonly TRACKING_PLATFORM: string;
     protected readonly deactivate: boolean;
+    protected readonly deactivateByInAndExclude: boolean;
     protected readonly trackId: string;
     protected readonly trackDomain: string;
     protected readonly queue: Queue;

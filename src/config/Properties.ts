@@ -5,6 +5,10 @@ export class Properties {
     public static readonly DEBUG: string = 'tracking.debug';
     public static readonly DOMAIN: string = 'tracking.domain';
     public static readonly USE_PARAMS_FOR_DEFAULT_PAGE_NAME: string = 'tracking.useParamsForDefaultPageName';
+    public static readonly CONTAINS_INCLUDE: string = 'tracking.containsInclude';
+    public static readonly CONTAINS_EXCLUDE: string = 'tracking.containsExclude';
+    public static readonly MATCHES_INCLUDE: string = 'tracking.matchesInclude';
+    public static readonly MATCHES_EXCLUDE: string = 'tracking.matchesExclude';
     public static readonly CONSUMER_TYPE: string = 'consumer.consumerType';
     public static readonly FILE_PATH: string = 'consumer.filePath';
     public static readonly FILE_PREFIX: string = 'consumer.filePrefix';

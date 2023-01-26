@@ -48,6 +48,11 @@ export abstract class ACore extends ACleaner {
     protected readonly deactivate: boolean;
 
     /**
+     * Deactivate the tracking functionality.
+     */
+    protected readonly deactivateByInAndExclude: boolean;
+
+    /**
      * Your Mapp Intelligence track ID provided by Mapp.
      */
     protected readonly trackId: string;
@@ -86,6 +91,7 @@ export abstract class ACore extends ACleaner {
         this.logger = new DebugLogger(l);
 
         this.deactivate = this.config['deactivate'];
+        this.deactivateByInAndExclude = this.config['deactivateByInAndExclude'];
         this.trackId = this.config['trackId'];
         this.trackDomain = this.config['trackDomain'];
     }

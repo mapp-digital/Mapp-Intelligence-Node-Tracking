@@ -106,6 +106,20 @@ describe('MappIntelligenceTracking', () => {
         expect(customLogger.getMessages()).toContain('Mapp Intelligence tracking is deactivated');
     });
 
+    it('tracking is deactivated by include / exclude', async () => {
+        const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
+            .setLogger(customLogger)
+            .addMatchesInclude(/sub\.domain1\.tld/)
+            .addMatchesExclude(/sub\.domain1\.tld/)
+            .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
+
+        const mit = new MappIntelligenceTracking(mic);
+
+        expect(await mit.flush()).toBeTruthy();
+        expect(await mit.track((new MappIntelligenceParameterMap()).add('pn', 'en.page.test'))).toBeFalsy();
+        expect(customLogger.getMessages()).toContain('Mapp Intelligence tracking is deactivated by include / exclude');
+    });
+
     it('simple data - 1', async () => {
         const mic = new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net');
         const mit = new MappIntelligenceTracking(mic);

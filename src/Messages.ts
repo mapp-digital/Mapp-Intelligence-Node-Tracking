@@ -16,6 +16,7 @@ export class Messages {
     public static readonly REQUIRED_TRACK_ID_AND_DOMAIN_FOR_COOKIE: string = Messages.REQUIRED_TRACK_ID_AND_DOMAIN + ' get user cookie';
     public static readonly REQUIRED_TRACK_ID_AND_DOMAIN_FOR_TRACKING: string = Messages.REQUIRED_TRACK_ID_AND_DOMAIN + ' track data';
     public static readonly TRACKING_IS_DEACTIVATED: string = 'Mapp Intelligence tracking is deactivated';
+    public static readonly TRACKING_IS_DEACTIVATED_BY_IN_AND_EXCLUDE: string = Messages.TRACKING_IS_DEACTIVATED + ' by include / exclude';
     public static readonly SENT_BATCH_REQUESTS: string = 'Sent batch requests, current queue size is ${0} req.';
     public static readonly BATCH_REQUEST_FAILED: string = 'Batch request failed!';
     public static readonly CURRENT_QUEUE_STATUS: string = 'Batch of ${0} req. sent, current queue size is ${1} req.';

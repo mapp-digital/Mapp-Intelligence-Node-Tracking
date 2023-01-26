@@ -4,7 +4,7 @@
  * @param properties Property names
  * @param type Datatype
  */
-function addProperties(that: any, data: any, properties: Array<string>, type: string) {
+function addProperties(that: any, data: any, properties: Array<string>, type: string): void {
     for (let prop of properties) {
         if (typeof data[prop] === type) {
             that[prop] = data[prop];
@@ -12,16 +12,42 @@ function addProperties(that: any, data: any, properties: Array<string>, type: st
     }
 }
 
+/**
+ * @param that Property instance
+ * @param data Property data
+ * @param properties Property names
+ * @param filter Filter function
+ */
+function addArrayProperties(that: any, data: any, properties: Array<string>, filter: (value: any) => boolean): void {
+    for (let prop of properties) {
+        if (data[prop] instanceof Array) {
+            that[prop] = data[prop].filter(filter);
+        }
+    }
+}
+
 class Tracking {
     private static readonly STRING_PROPERTIES: Array<string> = ['trackId', 'trackDomain'];
     private static readonly BOOLEAN_PROPERTIES: Array<string> = ['deactivate', 'debug'];
+    private static readonly ARRAY_STRING_PROPERTIES: Array<string> = [
+        'useParamsForDefaultPageName', 'containsInclude', 'containsExclude'
+    ];
+    private static readonly ARRAY_STRING_REGEXP_PROPERTIES: Array<string> = [
+        'domain', 'matchesInclude', 'matchesExclude'
+    ];
 
-    private readonly trackId: string;
-    private readonly trackDomain: string;
-    private readonly deactivate: boolean;
-    private readonly debug: boolean;
-    private readonly domain: Array<string | RegExp>;
-    private readonly useParamsForDefaultPageName: Array<string | RegExp>;
+    private readonly trackId: string = "";
+    private readonly trackDomain: string = "";
+    private readonly deactivate: boolean = false;
+    private readonly debug: boolean = false;
+    private readonly domain: Array<string | RegExp> = [];
+    private readonly useParamsForDefaultPageName: Array<string> = [];
+    private readonly containsInclude: Array<string> = [];
+    private readonly containsExclude: Array<string> = [];
+    private readonly matchesInclude: Array<string | RegExp> = [];
+    private readonly matchesExclude: Array<string | RegExp> = [];
+    private readonly matchesIncludeRegExp: Array<RegExp> = [];
+    private readonly matchesExcludeRegExp: Array<RegExp> = [];
 
     /**
      * @param data Tracking properties
@@ -30,16 +56,35 @@ class Tracking {
         addProperties(this, data, Tracking.STRING_PROPERTIES, 'string');
         addProperties(this, data, Tracking.BOOLEAN_PROPERTIES, 'boolean');
 
-        if (data.domain instanceof Array) {
-            this.domain = data.domain.filter(function(value: any) {
-                return typeof value === 'string' || value instanceof RegExp;
-            });
-        }
+        addArrayProperties(this, data, Tracking.ARRAY_STRING_PROPERTIES, (value: any) => {
+            return typeof value === 'string';
+        });
 
-        if (data.useParamsForDefaultPageName instanceof Array) {
-            this.useParamsForDefaultPageName = data.useParamsForDefaultPageName.filter(function(value: any) {
-                return typeof value === 'string';
-            });
+        addArrayProperties(this, data, Tracking.ARRAY_STRING_REGEXP_PROPERTIES, (value: any) => {
+            return typeof value === 'string' || value instanceof RegExp;
+        });
+
+        Tracking.convertToRegExp(this.matchesInclude, this.matchesIncludeRegExp);
+        Tracking.convertToRegExp(this.matchesExclude, this.matchesExcludeRegExp);
+    }
+
+    /**
+     * @param stringArray
+     * @param regexpArray
+     */
+    private static convertToRegExp(stringArray: Array<string | RegExp>, regexpArray: Array<RegExp>): void {
+        for (let str of stringArray) {
+            try {
+                let val = str;
+                if (typeof val === 'string') {
+                    val = new RegExp(val);
+                }
+
+                regexpArray.push(val);
+            }
+            catch (e) {
+                // do nothing
+            }
         }
     }
 
@@ -53,7 +98,11 @@ class Tracking {
             deactivate: this.deactivate,
             debug: this.debug,
             domain: this.domain,
-            useParamsForDefaultPageName: this.useParamsForDefaultPageName
+            useParamsForDefaultPageName: this.useParamsForDefaultPageName,
+            containsInclude: this.containsInclude,
+            containsExclude: this.containsExclude,
+            matchesInclude: this.matchesIncludeRegExp,
+            matchesExclude: this.matchesExcludeRegExp
         };
     }
 }
