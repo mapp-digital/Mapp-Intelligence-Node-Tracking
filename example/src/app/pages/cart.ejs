@@ -1,0 +1,20 @@
+<div class="row">
+    <div class="span9">
+        <h4 class="title"><span class="text"><strong>Your</strong> Cart</span></h4>
+        <%- include('../checkout/basket.ejs') %>
+        <hr/>
+        <% if (cart.length > 0) { %>
+            <p class="buttons center">
+                <button class="btn btn-inverse" type="submit" id="checkout">Proceed to Checkout</button>
+            </p>
+        <% } %>
+    </div>
+    <div class="span3 col">
+        <div class="block">
+            <%- include('../product/randomize.ejs') %>
+        </div>
+        <div class="block">
+            <%- include('../product/best-seller.ejs') %>
+        </div>
+    </div>
+</div>

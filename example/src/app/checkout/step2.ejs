@@ -1,0 +1,20 @@
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Account &amp; Billing Details</a>
+    </div>
+
+    <% if (user === null || (user !== null && personal !== null)) { %>
+        <div id="collapseTwo" class="accordion-body collapse">
+    <% } %>
+
+    <% if (user !== null && personal === null) { %>
+        <div id="collapseTwo" class="accordion-body in collapse">
+    <% } %>
+
+    <div class="accordion-inner">
+        <div class="row-fluid">
+            <%- include('../forms/personal.ejs') %>
+        </div>
+    </div>
+</div>
+</div>

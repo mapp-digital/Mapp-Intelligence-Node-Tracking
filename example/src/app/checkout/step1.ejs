@@ -1,0 +1,23 @@
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Checkout Options</a>
+    </div>
+
+    <% if (user !== null) { %>
+        <div id="collapseOne" class="accordion-body collapse">
+    <% } else { %>
+        <div id="collapseOne" class="accordion-body in collapse">
+    <% } %>
+
+    <div class="accordion-inner">
+        <div class="row-fluid">
+            <div class="span6">
+                <%- include('../forms/new-customer.ejs') %>
+            </div>
+            <div class="span6">
+                <%- include('../forms/returning-customer.ejs') %>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

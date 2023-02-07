@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('app/sections/header.ejs') %>
+    </head>
+    <body>
+        <%- include('app/sections/top-bar.ejs') %>
+        <div id="wrapper" class="container">
+            <%- include('app/sections/menu.ejs') %>
+
+            <% if (/\/$/.test(requestUrl)) { %>
+                <%- include('app/sections/slider.ejs') %>
+            <% } else { %>
+                <%- include('app/sections/banner.ejs') %>
+            <% } %>
+
+            <section class="main-content">
+                <div class="row">
+                    <div class="span12">
+                        <% if (requestUrl.indexOf('/products') !== -1) { %>
+                            <%- include('app/pages/products.ejs') %>
+                        <% } else if (requestUrl.indexOf('/product_detail/') !== -1) { %>
+                            <%- include('app/pages/product_detail.ejs') %>
+                        <% } else if (requestUrl.indexOf('/cart') !== -1) { %>
+                            <%- include('app/pages/cart.ejs') %>
+                        <% } else if (requestUrl.indexOf('/checkout') !== -1) { %>
+                            <%- include('app/pages/checkout.ejs') %>
+                        <% } else if (requestUrl.indexOf('/order/') !== -1) { %>
+                            <%- include('app/pages/confirmation.ejs') %>
+                        <% } else if (requestUrl.indexOf('/category/') !== -1) { %>
+                            <%- include('app/pages/category.ejs') %>
+                        <% } else if (requestUrl.indexOf('/search/') !== -1) { %>
+                            <%- include('app/pages/search.ejs') %>
+                        <% } else if (requestUrl.indexOf('/register') !== -1) { %>
+                            <%- include('app/pages/register.ejs') %>
+                        <% } else if (requestUrl.indexOf('/contact') !== -1) { %>
+                            <%- include('app/pages/contact.ejs') %>
+                        <% } else { %>
+                            <%- include('app/pages/home.ejs') %>
+                        <% } %>
+
+                        <% if (/\/$/.test(requestUrl)) { %>
+                            <%- include('app/sections/feature.ejs') %>
+                        <% } %>
+                    </div>
+                </div>
+            </section>
+
+            <% if (/\/$/.test(requestUrl)) { %>
+                <%- include('app/sections/manufactures.ejs') %>
+            <% } %>
+
+            <%- include('app/sections/footer.ejs') %>
+        </div>
+
+        <%- include('app/sections/script.ejs') %>
+    </body>
+</html>

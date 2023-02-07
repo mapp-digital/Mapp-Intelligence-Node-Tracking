@@ -40,4 +40,5 @@ Desktop.ini
 # Temp files
 **/.build/*
 **/.release/*
+**/MappIntelligenceRequests*
 node-version.txt

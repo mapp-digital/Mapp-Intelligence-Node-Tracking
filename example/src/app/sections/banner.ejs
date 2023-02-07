@@ -1,0 +1,19 @@
+<section class="header_text sub">
+    <img class="pageBanner" src="assets/themes/images/pageBanner.png" alt="New products" >
+
+    <% if (info !== null) { %>
+        <div class="row">
+            <div class="span12">
+                <h4 class="title info"><span class="text" style="padding-left: 10px"><%= info %></span></h4>
+            </div>
+        </div>
+    <% } %>
+
+    <% if (error !== null) { %>
+        <div class="row">
+            <div class="span12">
+                <h4 class="title error"><span class="text" style="padding-left: 10px;"><%= error %></span></h4>
+            </div>
+        </div>
+    <% } %>
+</section>

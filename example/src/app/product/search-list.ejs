@@ -1,0 +1,15 @@
+<h1 class="center"><strong>Search results for '<%= search %>' (<%= searchListResult %> results)</strong></h1>
+<ul class="thumbnails listing-products">
+    <% for (var i = 0, l = searchList.length, p; i < l; i++) { %>
+        <% p = searchList[i] %>
+        <li class="span3">
+            <div class="product-box">
+                <span class="sale_tag"></span>
+                <a href="product_detail/<%= p.sku %>"><img alt="" src="<%= p.url %>"></a><br/>
+                <a href="product_detail/<%= p.sku %>" class="title"><%= p.name %></a><br/>
+                <a href="category/<%= p.category.toLowerCase() %>" class="category"><%= p.category %></a>
+                <p class="price"><%= p.price %>€</p>
+            </div>
+        </li>
+    <% } %>
+</ul>

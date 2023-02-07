@@ -1,0 +1,42 @@
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">Confirm Order</a>
+    </div>
+
+    <% if (personal !== null) { %>
+        <div id="collapseThree" class="accordion-body in collapse">
+    <% } else { %>
+        <div id="collapseThree" class="accordion-body collapse">
+    <% } %>
+
+    <div class="accordion-inner">
+        <div class="row-fluid">
+            <div class="control-group">
+                <h4 class="title"><span class="text"><strong>Order</strong> Review</span></h4>
+                <div class="row" style="margin-left: 0;">
+                    <div class="span9">
+                        <h4 class="title"><span class="text"><strong>Basket</strong> Review</span></h4>
+                        <%- include('basket.ejs') %>
+                    </div>
+                    <div class="span3">
+                        <h4 class="title"><span class="text"><strong>Personal</strong> Review</span></h4>
+                        <ul class="nav">
+                            <li>First Name: <%= user ? user.firstName : '' %></li>
+                            <li>Last Name: <%= user ? user.lastName : '' %></li>
+                            <li>Email Address: <%= user ? user.email : '' %></li>
+                            <li>Telephone: <%= user ? user.telephone : '' %></li>
+                            <li>Address 1: <%= personal ? personal.address1 : '' %></li>
+                            <li>Address 2: <%= personal ? personal.address2 : '' %></li>
+                            <li>Country: <%= personal ? personal.country : '' %></li>
+                            <li>City: <%= personal ? personal.city : '' %></li>
+                            <li>Post Code: <%= personal ? personal.postCode : '' %></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <button id="confirmation" class="btn btn-inverse pull-right" <%= cart.length > 0 ? '' : 'disabled' %>>Place Order</button>
+        </div>
+    </div>
+</div>
+</div>

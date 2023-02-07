@@ -6,6 +6,21 @@ GROUP_ID := $(shell id -g)
 export USER_ID
 export GROUP_ID
 
+shop:
+	bash -c "docker-compose build shop && docker-compose up shop"
+
+shop-cron-fail:
+	docker exec webtrekk-node_shop_1 /bin/bash -c "/app/example/node_modules/.bin/mapp-intelligence-node -i 111111111111111 -d q3.webtrekk.net -f /app/example/log/ --debug"
+
+shop-cron-success:
+	docker exec webtrekk-node_shop_1 /bin/bash -c "/app/example/node_modules/.bin/mapp-intelligence-node -i 123451234512345 -d q3.webtrekk.net -f /app/example/log/ --debug"
+
+shop-log:
+	docker exec -it -w /app/example/log/ webtrekk-node_shop_1 bash
+
+shop-ssh:
+	docker exec -it webtrekk-node_shop_1 bash
+
 start:
 	CONTAINER_VERSION="$(CONTAINER_VERSION)" bash -c "docker-compose build && docker-compose run node && docker-compose down --volumes"
 

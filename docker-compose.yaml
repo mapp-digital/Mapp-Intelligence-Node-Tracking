@@ -12,3 +12,15 @@ services:
       dockerfile: Dockerfile
     volumes:
       - "./:/app"
+
+  shop:
+    build:
+      context: .
+      args:
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
+      dockerfile: DockerfileShop
+    ports:
+      - 8081:8081
+    volumes:
+      - "./:/app"

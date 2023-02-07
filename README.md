@@ -16,16 +16,53 @@ library provides scripts to track user behavior and technical information, such 
 addition to the standard data collection, the tracking library offers many options to customize tracking based on 
 specific use cases. Typical use cases are product, order and shipment tracking or the tracking of application processes.
 
-## Makefile
+# Development
 
-- **test node v10 - v16**: `make test-all`
-- **test node v10**: `make test-node10`
-- **test node v11**: `make test-node11`
-- **test node v12**: `make test-node12`
-- **test node v13**: `make test-node13`
-- **test node v14**: `make test-node14`
-- **test node v15**: `make test-node15`
-- **test node v16**: `make test-node16`
-- **test latest node**: `make test-latest`
-- **build**: `make build`
-- **release**: `make release`
+## Requirements
+
+| Software         | Version     |
+|------------------|------------:|
+| `docker`         |     `19.0+` |
+| `docker-compose` |     `1.24+` |
+| `make`           |             |
+
+## Build
+
+Build test and compile *Mapp Intelligence - Server-side NodeJS tracking library* with NodeJS 14.17.3 inside a docker container.
+
+```bash
+$ make build
+```
+
+## Test
+
+Test *Mapp Intelligence - Server-side NodeJS tracking library* with NodeJS 10 - 16 inside a docker container.
+
+```bash
+$ make test-all
+```
+
+Test *Mapp Intelligence - Server-side NodeJS tracking library* with the current latest NodeJS version inside a docker container.
+
+```bash
+$ make test-latest
+```
+
+## Demo
+
+Start a demo shop example on [0.0.0.0:8081](http://0.0.0.0:8081).
+
+```bash
+# start a demo shop example
+$ make demo
+
+# ssh access to the demo shop
+$ m̀ake shop-ssh
+
+# ssh access to the log files of the demo shop
+$ m̀ake shop-log
+
+# example for cronjob calls
+$ m̀ake shop-cron-fail
+$ m̀ake shop-cron-success
+```

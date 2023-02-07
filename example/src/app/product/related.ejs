@@ -1,0 +1,46 @@
+<h4 class="title">
+    <span class="pull-left"><span class="text"><strong>Related</strong> Products</span></span>
+    <span class="pull-right">
+        <a class="left button" href="#myCarousel-1" data-slide="prev"></a><a class="right button" href="#myCarousel-1" data-slide="next"></a>
+    </span>
+</h4>
+<div id="myCarousel-1" class="carousel slide">
+    <div class="carousel-inner">
+        <div class="active item">
+            <ul class="thumbnails listing-products">
+                <% for (var i = 0, l = related.length, p; i < l; i++) { %>
+                    <% if (i < 3) { %>
+                        <% p = related[i] %>
+                        <li class="span3">
+                            <div class="product-box">
+                                <span class="sale_tag"></span>
+                                <a href="product_detail/<%= p.sku %>"><img src="<%= p.url %>" alt="" /></a><br/>
+                                <a href="product_detail/<%= p.sku %>" class="title"><%= p.name %></a><br/>
+                                <a href="category/<%= p.category.toLowerCase() %>" class="category"><%= p.category %></a>
+                                <p class="price"><%= p.price %>€</p>
+                            </div>
+                        </li>
+                    <% } %>
+                <% } %>
+            </ul>
+        </div>
+        <div class="item">
+            <ul class="thumbnails listing-products">
+                <% for (var i = 0, l = related.length, p; i < l; i++) { %>
+                    <% if (i >= 3 && i < 6) { %>
+                        <% p = related[i] %>
+                        <li class="span3">
+                            <div class="product-box">
+                                <span class="sale_tag"></span>
+                                <a href="product_detail/<%= p.sku %>"><img src="<%= p.url %>" alt="" /></a><br/>
+                                <a href="product_detail/<%= p.sku %>" class="title"><%= p.name %></a><br/>
+                                <a href="category/<%= p.category.toLowerCase() %>" class="category"><%= p.category %></a>
+                                <p class="price"><%= p.price %>€</p>
+                            </div>
+                        </li>
+                    <% } %>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</div>

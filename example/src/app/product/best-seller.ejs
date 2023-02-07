@@ -1,0 +1,12 @@
+<h4 class="title"><strong>Best</strong> Seller</h4>
+<ul class="small-product">
+    <% for (var i = 0, l = bestseller.length, p; i < l; i++) { %>
+        <% p = bestseller[i] %>
+        <li>
+            <a href="product_detail/<%= p.sku %>" title="<%= p.name %>">
+                <img src="<%= p.url %>" alt="<%= p.name %>">
+            </a>
+            <a href="product_detail/<%= p.sku %>"><%= p.name %></a>
+        </li>
+    <% } %>
+</ul>

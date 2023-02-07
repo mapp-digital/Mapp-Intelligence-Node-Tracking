@@ -1,0 +1,29 @@
+<h4 class="title">
+    <span class="pull-left"><span class="text">Randomize</span></span>
+    <span class="pull-right">
+        <a class="left button" href="#myCarousel" data-slide="prev"></a><a class="right button" href="#myCarousel" data-slide="next"></a>
+    </span>
+</h4>
+<div id="myCarousel" class="carousel slide">
+    <div class="carousel-inner">
+        <% for (var i = 0, l = randomize.length, p; i < l; i++) { %>
+            <% p = randomize[i] %>
+            <% if (i === 0) { %>
+                <div class="active item">
+            <% } else { %>
+                <div class="item">
+            <% } %>
+            <ul class="thumbnails listing-products">
+                <li class="span3">
+                    <div class="product-box">
+                        <a href="product_detail/<%= p.sku %>"><img alt="" src="<%= p.url %>"></a><br/>
+                        <a href="product_detail/<%= p.sku %>" class="title"><%= p.name %></a><br/>
+                        <a href="category/<%= p.category.toLowerCase() %>" class="category"><%= p.category %></a>
+                        <p class="price"><%= p.price %>€</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <% } %>
+    </div>
+</div>

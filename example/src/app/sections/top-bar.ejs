@@ -1,0 +1,29 @@
+<div id="top-bar" class="container">
+    <div class="row">
+        <div class="span4">
+            <%- include('../forms/search.ejs') %>
+        </div>
+        <div class="span8">
+            <div class="account pull-right">
+                <ul class="user-menu">
+                    <% if (user !== null) { %>
+                        <li><a href="#"><%= user.firstName %> <%= user.lastName %>!</a></li>
+                    <% } else { %>
+                        <li><a href="#">My Account</a></li>
+                    <% } %>
+
+                    <li><a href="basket/cart">Your Cart</a></li>
+                    <li><a href="checkout">Checkout</a></li>
+
+                    <% if (user !== null) { %>
+                        <li>
+                            <%- include('../forms/logout.ejs') %>
+                        </li>
+                    <% } else { %>
+                        <li><a href="register">Login</a></li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
