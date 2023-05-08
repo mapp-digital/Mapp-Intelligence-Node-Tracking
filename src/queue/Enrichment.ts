@@ -37,6 +37,30 @@ export class Enrichment {
      */
     private readonly userAgent: string;
     /**
+     * HTTP header for Sec-CH-UA
+     */
+    private readonly clientHintUserAgent: string;
+    /**
+     * HTTP header for Sec-CH-UA-Full-Version-List
+     */
+    private readonly clientHintUserAgentFullVersionList: string;
+    /**
+     * HTTP header for Sec-CH-UA-Model
+     */
+    private readonly clientHintUserAgentModel: string;
+    /**
+     * HTTP header for Sec-CH-UA-Mobile
+     */
+    private readonly clientHintUserAgentMobile: string;
+    /**
+     * HTTP header for Sec-CH-UA-Platform
+     */
+    private readonly clientHintUserAgentPlatform: string;
+    /**
+     * HTTP header for Sec-CH-UA-Platform-Version
+     */
+    private readonly clientHintUserAgentPlatformVersion: string;
+    /**
      * Remote address (ip) from the client.
      */
     private readonly remoteAddress: string;
@@ -70,6 +94,13 @@ export class Enrichment {
         this.domain = config['domain'];
         this.referrerURL = config['referrerURL'];
         this.userAgent = config['userAgent'];
+        this.clientHintUserAgent = config['clientHintUserAgent'];
+        this.clientHintUserAgentFullVersionList = config['clientHintUserAgentFullVersionList'];
+        this.clientHintUserAgentModel = config['clientHintUserAgentModel'];
+        this.clientHintUserAgentMobile = config['clientHintUserAgentMobile'];
+        this.clientHintUserAgentPlatform = config['clientHintUserAgentPlatform'];
+        this.clientHintUserAgentPlatformVersion = config['clientHintUserAgentPlatformVersion'];
+
         this.remoteAddress = config['remoteAddress'];
         this.requestURL = config['requestURL'];
         this.useParamsForDefaultPageName = config['useParamsForDefaultPageName'];
@@ -77,7 +108,7 @@ export class Enrichment {
         this.everId = this.getUserId();
 
         const l: ILogger = config['logger'];
-        this.logger = new DebugLogger(l);
+        this.logger = new DebugLogger(l, config['logLevel']);
     }
 
     /**
@@ -147,7 +178,7 @@ export class Enrichment {
                 }
             } catch (e) {
                 /* istanbul ignore next */
-                this.logger.log(Messages.GENERIC_ERROR, e.name, e.message);
+                this.logger.error(Messages.GENERIC_ERROR, e.name, e.message);
             }
         }
 
@@ -276,6 +307,48 @@ export class Enrichment {
      */
     protected getUserAgent(): string {
         return this.userAgent;
+    }
+
+    /**
+     * @return String
+     */
+    protected getClientHintUserAgent(): string {
+        return this.clientHintUserAgent;
+    }
+
+    /**
+     * @return String
+     */
+    protected getClientHintUserAgentFullVersionList(): string {
+        return this.clientHintUserAgentFullVersionList;
+    }
+
+    /**
+     * @return String
+     */
+    protected getClientHintUserAgentModel(): string {
+        return this.clientHintUserAgentModel;
+    }
+
+    /**
+     * @return String
+     */
+    protected getClientHintUserAgentMobile(): string {
+        return this.clientHintUserAgentMobile;
+    }
+
+    /**
+     * @return String
+     */
+    protected getClientHintUserAgentPlatform(): string {
+        return this.clientHintUserAgentPlatform;
+    }
+
+    /**
+     * @return String
+     */
+    protected getClientHintUserAgentPlatformVersion(): string {
+        return this.clientHintUserAgentPlatformVersion;
     }
 
     /**

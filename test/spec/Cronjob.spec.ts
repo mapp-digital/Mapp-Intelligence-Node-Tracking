@@ -6,7 +6,7 @@ import {
     MappIntelligenceConsumerType,
     MappIntelligenceConfig,
     MappIntelligenceCronjob,
-    MappIntelligenceHybrid
+    MappIntelligenceHybrid, MappIntelligenceLogLevel
 } from '../../src/MappIntelligence';
 
 import {Messages} from "../../src/Messages";
@@ -179,6 +179,7 @@ describe('MappIntelligenceCronjob', () => {
             '-d', 'q3.webtrekk.net',
             '-f', filePath,
             '-p', 'webtrekk',
+            '-l', MappIntelligenceLogLevel.DEBUG,
             '--debug'
         ]);
 
@@ -193,6 +194,7 @@ describe('MappIntelligenceCronjob', () => {
             '-d', 'q3.webtrekk.net',
             '-f', filePath,
             '-p', 'webtrekk',
+            '-l', MappIntelligenceLogLevel.DEBUG,
             '--debug',
             '--deactivate'
         ]);
@@ -262,6 +264,7 @@ describe('MappIntelligenceCronjob', () => {
             '-d', 'q3.webtrekk.net',
             '-f', filePath,
             '-p', 'webtrekk',
+            '--logLevel', MappIntelligenceLogLevel.DEBUG,
             '--debug'
         ]);
 
@@ -278,6 +281,7 @@ describe('MappIntelligenceCronjob', () => {
             '-d', 'q3.webtrekk.net',
             '-f', filePath,
             '-p', 'webtrekk',
+            '-l', MappIntelligenceLogLevel.DEBUG,
             '--debug'
         ]);
 
@@ -297,6 +301,7 @@ describe('MappIntelligenceCronjob', () => {
             '-d', 'q3.webtrekk.net',
             '-f', filePath,
             '-p', 'webtrekk',
+            '-l', MappIntelligenceLogLevel.DEBUG,
             '--debug'
         ]);
 
@@ -312,6 +317,7 @@ describe('MappIntelligenceCronjob', () => {
             '-i', '111111111111111',
             '-d', 'q3.webtrekk.net',
             '-f', filePath + '/foo',
+            '-l', MappIntelligenceLogLevel.DEBUG,
             '--debug'
         ]);
 
@@ -329,6 +335,7 @@ describe('MappIntelligenceCronjob', () => {
             '-c', configFile,
             '-f', filePath,
             '-p', 'webtrekk',
+            '-l', MappIntelligenceLogLevel.DEBUG,
             '--debug'
         ]);
 
@@ -354,6 +361,7 @@ describe('MappIntelligenceCronjob', () => {
             '-c', configFile,
             '-f', filePath,
             '-p', 'webtrekk',
+            '-l', MappIntelligenceLogLevel.DEBUG,
             '--debug'
         ]);
 

@@ -1,7 +1,7 @@
 import {EOL} from 'os';
 import {promises as fs} from 'fs';
 import {MappIntelligenceUnitUtil, CustomLogger} from '../_utils/MappIntelligenceUnitUtil'
-import {MappIntelligenceConfig} from '../../../src/MappIntelligence';
+import {MappIntelligenceConfig, MappIntelligenceLogLevel} from '../../../src/MappIntelligence';
 import {ConsumerFile} from '../../../src/consumer/ConsumerFile';
 
 function getTimestamp(): number {
@@ -92,7 +92,8 @@ describe('ConsumerFile', () => {
         const consumer = new ConsumerFile({
             filePath: tempFilePathFail,
             filePrefix: tempFilePrefix,
-            logger: customLogger
+            logger: customLogger,
+            logLevel: MappIntelligenceLogLevel.DEBUG
         });
 
         expect(await consumer.sendBatch([])).toBeFalsy();
@@ -103,7 +104,8 @@ describe('ConsumerFile', () => {
         const mic = (new MappIntelligenceConfig())
             .setFilePath(tempFilePathFail)
             .setFilePrefix(tempFilePrefix)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         const data = ['wt?p=300,0'];
@@ -115,7 +117,8 @@ describe('ConsumerFile', () => {
         const mic = (new MappIntelligenceConfig())
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         expect(await consumer.sendBatch(contentMaxBatchSize)).toBeFalsy();
@@ -126,7 +129,8 @@ describe('ConsumerFile', () => {
         const mic = (new MappIntelligenceConfig())
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         expect(await consumer.sendBatch(maxPayloadSize)).toBeFalsy();
@@ -139,7 +143,8 @@ describe('ConsumerFile', () => {
     //     const mic = (new MappIntelligenceConfig())
     //         .setFilePath(tempFilePath)
     //         .setFilePrefix(tempFilePrefix)
-    //         .setLogger(customLogger);
+    //         .setLogger(customLogger)
+    //         .setLogLevel(MappIntelligenceLogLevel.DEBUG);
     //     const consumer = new ConsumerFile(mic.build());
     //
     //     await consumer.sendBatch([]);
@@ -161,7 +166,8 @@ describe('ConsumerFile', () => {
         const mic = (new MappIntelligenceConfig())
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         const data = ['wt?p=300,0'];
@@ -178,7 +184,8 @@ describe('ConsumerFile', () => {
         const mic = (new MappIntelligenceConfig())
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         const data = ['wt?p=300,0', 'wt?p=300,1', 'wt?p=300,2'];
@@ -196,7 +203,8 @@ describe('ConsumerFile', () => {
         const mic = (new MappIntelligenceConfig())
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         const data = ['wt?p=300,0', 'wt?p=300,1', 'wt?p=300,2'];
@@ -216,7 +224,8 @@ describe('ConsumerFile', () => {
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
             .setMaxFileLines(5)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         for (let i = 0; i < 10; i++) {
@@ -240,7 +249,8 @@ describe('ConsumerFile', () => {
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
             .setMaxFileDuration(1000)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         const data = ['wt?p=300,0', 'wt?p=300,1'];
@@ -268,7 +278,8 @@ describe('ConsumerFile', () => {
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
             .setMaxFileSize(10)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         const data = ['wt?p=300,0', 'wt?p=300,1'];
@@ -298,7 +309,8 @@ describe('ConsumerFile', () => {
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
             .setMaxFileLines(5)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         const data = ['wt?p=300,0', 'wt?p=300,1'];
@@ -316,7 +328,8 @@ describe('ConsumerFile', () => {
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
             .setMaxFileSize(10)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         for (let i = 0; i < 25; i++) {
@@ -339,7 +352,8 @@ describe('ConsumerFile', () => {
             .setFilePath(tempFilePath + '/foobar')
             .setFilePrefix(tempFilePrefix)
             .setMaxFileLines(5)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         const data = ['wt?p=300,0', 'wt?p=300,1'];
@@ -360,7 +374,8 @@ describe('ConsumerFile', () => {
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
             .setMaxFileLines(5)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         const data = ['wt?p=300,0', 'wt?p=300,1'];
@@ -384,7 +399,8 @@ describe('ConsumerFile', () => {
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
             .setMaxFileLines(5)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         const data = ['wt?p=300,0', 'wt?p=300,1'];
@@ -398,7 +414,8 @@ describe('ConsumerFile', () => {
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
             .setMaxFileDuration(1000)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerFile(mic.build());
 
         const data = ['wt?p=300,0', 'wt?p=300,1'];

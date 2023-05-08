@@ -1,6 +1,7 @@
 import {MappIntelligenceUnitUtil, CustomLogger} from '../_utils/MappIntelligenceUnitUtil';
 import {
     MappIntelligenceConfig,
+    MappIntelligenceLogLevel,
     MappIntelligenceConsumerType
 } from '../../../src/MappIntelligence';
 
@@ -20,6 +21,7 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['trackDomain']);
         expect(1).toBe(config['domain'].length);
         expect(config['logger']).toBeUndefined();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config['logLevel']);
         expect(MappIntelligenceConsumerType.HTTP_CLIENT).toBe(config['consumerType']);
         expect(1).toBe(config['maxAttempt']);
         expect(100).toBe(config['attemptTimeout']);
@@ -51,12 +53,19 @@ describe('MappIntelligenceConfig', () => {
         mic.setTrackId(null)
             .setTrackDomain(null)
             .setUserAgent(null)
+            .setClientHintUserAgent(null)
+            .setClientHintUserAgentFullVersionList(null)
+            .setClientHintUserAgentMobile(null)
+            .setClientHintUserAgentModel(null)
+            .setClientHintUserAgentPlatform(null)
+            .setClientHintUserAgentPlatformVersion(null)
             .setRemoteAddress(null)
             .setReferrerURL(null)
             .setRequestURL(null)
             .setCookie(null).addCookie(null, null).addCookie('', null).addCookie(null, '')
             .setDomain(null).addDomain(null)
             .setLogger(null)
+            .setLogLevel(null)
             .setConsumerType(null)
             .setConsumer(null)
             .setFilePath(null)
@@ -72,6 +81,7 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['trackDomain']);
         expect(1).toBe(config['domain'].length);
         expect(config['logger']).toBeUndefined();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config['logLevel']);
         expect(MappIntelligenceConsumerType.HTTP_CLIENT).toBe(config['consumerType']);
         expect(1).toBe(config['maxAttempt']);
         expect(100).toBe(config['attemptTimeout']);
@@ -83,6 +93,12 @@ describe('MappIntelligenceConfig', () => {
         expect(true).toBe(config['forceSSL']);
         expect(0).toBe(config['useParamsForDefaultPageName'].length);
         expect('').toBe(config['userAgent']);
+        expect('').toBe(config['clientHintUserAgent']);
+        expect('').toBe(config['clientHintUserAgentFullVersionList']);
+        expect('').toBe(config['clientHintUserAgentModel']);
+        expect('').toBe(config['clientHintUserAgentMobile']);
+        expect('').toBe(config['clientHintUserAgentPlatform']);
+        expect('').toBe(config['clientHintUserAgentPlatformVersion']);
         expect('').toBe(config['remoteAddress']);
         expect('').toBe(config['referrerURL']);
         expect(config['requestURL']).toBeUndefined();
@@ -106,6 +122,7 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['trackDomain']);
         expect(1).toBe(config['domain'].length);
         expect(config['logger']).toBeUndefined();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config['logLevel']);
         expect(MappIntelligenceConsumerType.HTTP_CLIENT).toBe(config['consumerType']);
         expect(1).toBe(config['maxAttempt']);
         expect(100).toBe(config['attemptTimeout']);
@@ -140,6 +157,7 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['trackDomain']);
         expect(1).toBe(config['domain'].length);
         expect(config['logger']).toBeUndefined();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config['logLevel']);
         expect(MappIntelligenceConsumerType.HTTP_CLIENT).toBe(config['consumerType']);
         expect(1).toBe(config['maxAttempt']);
         expect(100).toBe(config['attemptTimeout']);
@@ -174,6 +192,7 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['trackDomain']);
         expect(1).toBe(config['domain'].length);
         expect(config['logger']).toBeUndefined();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config['logLevel']);
         expect(MappIntelligenceConsumerType.HTTP_CLIENT).toBe(config['consumerType']);
         expect(1).toBe(config['maxAttempt']);
         expect(100).toBe(config['attemptTimeout']);
@@ -208,6 +227,7 @@ describe('MappIntelligenceConfig', () => {
         expect('analytics01.wt-eu02.net').toBe(config['trackDomain']);
         expect(2).toBe(config['domain'].length);
         expect(config['logger']).toBeUndefined();
+        expect(MappIntelligenceLogLevel.DEBUG).toBe(config['logLevel']);
         expect(MappIntelligenceConsumerType.FILE).toBe(config['consumerType']);
         expect(1).toBe(config['maxAttempt']);
         expect(100).toBe(config['attemptTimeout']);
@@ -242,6 +262,7 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['trackDomain']);
         expect(1).toBe(config['domain'].length);
         expect(config['logger']).toBeUndefined();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config['logLevel']);
         expect(MappIntelligenceConsumerType.FORK_CURL).toBe(config['consumerType']);
         expect(1).toBe(config['maxAttempt']);
         expect(100).toBe(config['attemptTimeout']);
@@ -276,6 +297,7 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['trackDomain']);
         expect(1).toBe(config['domain'].length);
         expect(config['logger']).toBeUndefined();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config['logLevel']);
         expect(MappIntelligenceConsumerType.HTTP_CLIENT).toBe(config['consumerType']);
         expect(1).toBe(config['maxAttempt']);
         expect(100).toBe(config['attemptTimeout']);
@@ -326,6 +348,7 @@ describe('MappIntelligenceConfig', () => {
         expect('analytics01.wt-eu02.net').toBe(config['trackDomain']);
         expect(1).toBe(config['domain'].length);
         expect(config['logger']).toBeUndefined();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config['logLevel']);
         expect(MappIntelligenceConsumerType.HTTP_CLIENT).toBe(config['consumerType']);
         expect(3).toBe(config['maxAttempt']);
         expect(200).toBe(config['attemptTimeout']);
@@ -360,6 +383,7 @@ describe('MappIntelligenceConfig', () => {
         expect('').toBe(config['trackDomain']);
         expect(1).toBe(config['domain'].length);
         expect(config['logger']).toBeUndefined();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config['logLevel']);
         expect(MappIntelligenceConsumerType.HTTP_CLIENT).toBe(config['consumerType']);
         expect(1).toBe(config['maxAttempt']);
         expect(100).toBe(config['attemptTimeout']);
@@ -394,6 +418,7 @@ describe('MappIntelligenceConfig', () => {
         expect('analytics01.wt-eu02.net').toBe(config['trackDomain']);
         expect(3).toBe(config['domain'].length);
         expect(config['logger']).toBeUndefined();
+        expect(MappIntelligenceLogLevel.DEBUG).toBe(config['logLevel']);
         expect(MappIntelligenceConsumerType.FILE).toBe(config['consumerType']);
         expect(1).toBe(config['maxAttempt']);
         expect(100).toBe(config['attemptTimeout']);
@@ -444,6 +469,7 @@ describe('MappIntelligenceConfig', () => {
         expect('analytics01.wt-eu02.net').toBe(config['trackDomain']);
         expect(1).toBe(config['domain'].length);
         expect(config['logger']).toBeUndefined();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config['logLevel']);
         expect(MappIntelligenceConsumerType.HTTP_CLIENT).toBe(config['consumerType']);
         expect(3).toBe(config['maxAttempt']);
         expect(200).toBe(config['attemptTimeout']);
@@ -508,12 +534,24 @@ describe('MappIntelligenceConfig', () => {
     it('header data', async () => {
         const mic = new MappIntelligenceConfig();
         mic.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0')
+            .setClientHintUserAgent("%22Chromium%22%3Bv%3D%22112%22%2C%20%22Google%20Chrome%22%3Bv%3D%22112%22%2C%20%22Not%3AA-Brand%22%3Bv%3D%2299%22")
+            .setClientHintUserAgentFullVersionList("%22Chromium%22%3Bv%3D%22110.0.5481.65%22%2C%20%22Not%20A(Brand%22%3Bv%3D%2224.0.0.0%22%2C%20%22Google%20Chrome%22%3Bv%3D%22110.0.5481.65%22")
+            .setClientHintUserAgentMobile("?1")
+            .setClientHintUserAgentModel("%22SM-A715F%22")
+            .setClientHintUserAgentPlatform("%22macOS%22")
+            .setClientHintUserAgentPlatformVersion("%2213.0.0%22")
             .setRemoteAddress('127.0.0.1')
             .setReferrerURL('https://sub.domain.tld/path/to/previous/page.html')
             .setRequestURL('https://sub.domain.tld/path/to/page.html?foo=bar&test=123#abc');
 
         const config: { [key: string]: any } = mic.build();
         expect('Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0').toBe(config['userAgent']);
+        expect("\"Chromium\";v=\"112\", \"Google Chrome\";v=\"112\", \"Not:A-Brand\";v=\"99\"").toBe(config["clientHintUserAgent"]);
+        expect("\"Chromium\";v=\"110.0.5481.65\", \"Not A(Brand\";v=\"24.0.0.0\", \"Google Chrome\";v=\"110.0.5481.65\"").toBe(config["clientHintUserAgentFullVersionList"]);
+        expect("?1").toBe(config["clientHintUserAgentMobile"]);
+        expect("\"SM-A715F\"").toBe(config["clientHintUserAgentModel"]);
+        expect("\"macOS\"").toBe(config["clientHintUserAgentPlatform"]);
+        expect("\"13.0.0\"").toBe(config["clientHintUserAgentPlatformVersion"]);
         expect('127.0.0.1').toBe(config['remoteAddress']);
         expect('https://sub.domain.tld/path/to/previous/page.html').toBe(config['referrerURL']);
         expect('sub.domain.tld').toBe(config['domain'][0]);
@@ -934,5 +972,53 @@ describe('MappIntelligenceConfig', () => {
 
         const config = mappIntelligenceConfig.build();
         expect(true).toBe(config['deactivateByInAndExclude']);
+    });
+
+    it('set log level int', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .setLogLevel(MappIntelligenceLogLevel.INFO);
+
+        const config = mappIntelligenceConfig.build();
+        expect(MappIntelligenceLogLevel.INFO).toBe(config["logLevel"]);
+    });
+
+    it('set log level int 2', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .setLogLevel(7);
+
+        const config = mappIntelligenceConfig.build();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config["logLevel"]);
+    });
+
+    it('set log level int 3', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .setLogLevel(-7);
+
+        const config = mappIntelligenceConfig.build();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config["logLevel"]);
+    });
+
+    it('set log level string', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .setLogLevel("INFO");
+
+        const config = mappIntelligenceConfig.build();
+        expect(MappIntelligenceLogLevel.INFO).toBe(config["logLevel"]);
+    });
+
+    it('set log level string 2 ', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .setLogLevel("info");
+
+        const config = mappIntelligenceConfig.build();
+        expect(MappIntelligenceLogLevel.INFO).toBe(config["logLevel"]);
+    });
+
+    it('set log level string 3', async () => {
+        const mappIntelligenceConfig = (new MappIntelligenceConfig())
+            .setLogLevel("TRACE");
+
+        const config = mappIntelligenceConfig.build();
+        expect(MappIntelligenceLogLevel.ERROR).toBe(config["logLevel"]);
     });
 });

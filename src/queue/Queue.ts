@@ -71,6 +71,29 @@ export class Queue extends Enrichment {
     }
 
     /**
+     * @param data Query parameter map
+     * @param key Query parameter key
+     * @param value Query parameter value
+     */
+    private static addQueryParameterToMap(data: {[key: string]: string}, key: string, value: string): void {
+        if (value) {
+            data[key] = value;
+        }
+    }
+
+    /**
+     * @param str Tracking request data
+     * @param data Query parameter map
+     * @param key Query parameter key
+     * @param value Query parameter value
+     */
+    private static addNotExistingQueryParameterToMap(str: string, data: {[key: string]: string}, key: string, value: string): void {
+        if (str.indexOf(key) === -1) {
+            Queue.addQueryParameterToMap(data, key, value);
+        }
+    }
+
+    /**
      * @param batchContent List of tracking requests
      *
      * @return boolean
@@ -102,7 +125,7 @@ export class Queue extends Enrichment {
     private async flushQueue(): Promise<boolean> {
         let currentQueueSize: number = this.queue.length;
         let wasRequestSuccessful: boolean = true;
-        this.logger.log(Messages.SENT_BATCH_REQUESTS, currentQueueSize);
+        this.logger.debug(Messages.SENT_BATCH_REQUESTS, currentQueueSize);
 
         while (currentQueueSize > 0 && wasRequestSuccessful) {
             const batchSize: number = Math.min(this.maxBatchSize, currentQueueSize);
@@ -111,17 +134,17 @@ export class Queue extends Enrichment {
             wasRequestSuccessful = await this.sendBatch(batchContent);
 
             if (!wasRequestSuccessful) {
-                this.logger.log(Messages.BATCH_REQUEST_FAILED);
+                this.logger.warn(Messages.BATCH_REQUEST_FAILED);
 
                 this.queue.splice(0, 0, ...batchContent);
             }
 
             currentQueueSize = this.queue.length;
-            this.logger.log(Messages.CURRENT_QUEUE_STATUS, batchSize, currentQueueSize);
+            this.logger.debug(Messages.CURRENT_QUEUE_STATUS, batchSize, currentQueueSize);
         }
 
         if (currentQueueSize === 0) {
-            this.logger.log(Messages.QUEUE_IS_EMPTY);
+            this.logger.debug(Messages.QUEUE_IS_EMPTY);
         }
 
         return wasRequestSuccessful;
@@ -148,25 +171,16 @@ export class Queue extends Enrichment {
         let data: string = d;
         if (data) {
             const params: {[key: string]: string} = {};
-            let addParam = false;
+            Queue.addNotExistingQueryParameterToMap(data, params, Parameter.USER_AGENT, this.getUserAgent());
+            Queue.addNotExistingQueryParameterToMap(data, params, Parameter.USER_IP, this.getUserIP());
+            Queue.addNotExistingQueryParameterToMap(data, params, Parameter.CLIENT_HINT_USER_AGENT, this.getClientHintUserAgent());
+            Queue.addNotExistingQueryParameterToMap(data, params, Parameter.CLIENT_HINT_USER_AGENT_FULL_VERSION_LIST, this.getClientHintUserAgentFullVersionList());
+            Queue.addNotExistingQueryParameterToMap(data, params, Parameter.CLIENT_HINT_USER_AGENT_MODEL, this.getClientHintUserAgentModel());
+            Queue.addNotExistingQueryParameterToMap(data, params, Parameter.CLIENT_HINT_USER_AGENT_MOBILE, this.getClientHintUserAgentMobile());
+            Queue.addNotExistingQueryParameterToMap(data, params, Parameter.CLIENT_HINT_USER_AGENT_PLATFORM, this.getClientHintUserAgentPlatform());
+            Queue.addNotExistingQueryParameterToMap(data, params, Parameter.CLIENT_HINT_USER_AGENT_PLATFORM_VERSION, this.getClientHintUserAgentPlatformVersion());
 
-            if (data.indexOf(Parameter.USER_AGENT) === -1) {
-                const ua: string = this.getUserAgent();
-                if (ua) {
-                    params[Parameter.USER_AGENT] = ua;
-                    addParam = true;
-                }
-            }
-
-            if (data.indexOf(Parameter.USER_IP) === -1) {
-                const userIP: string = this.getUserIP();
-                if (userIP) {
-                    params[Parameter.USER_IP] = userIP;
-                    addParam = true;
-                }
-            }
-
-            data += ((addParam) ? '&' + Queue.buildQueryString(params) : '');
+            data += ((Object.keys(params).length > 0) ? '&' + Queue.buildQueryString(params) : '');
             this.queue.push(data);
 
             return data;
@@ -177,24 +191,19 @@ export class Queue extends Enrichment {
      * @param data Tracking request data
      */
     public addRequestAsObject(data: {[key: string]: string}): string {
-        const eid: string = this.getEverId();
-        if (eid) {
-            data[Parameter.EVER_ID] = eid;
-        }
-
-        const ua: string = this.getUserAgent();
-        if (ua) {
-            data[Parameter.USER_AGENT] = ua;
-        }
-
-        const userIP: string = this.getUserIP();
-        if (userIP) {
-            data[Parameter.USER_IP] = userIP;
-        }
+        Queue.addQueryParameterToMap(data, Parameter.USER_IP, this.getUserIP());
+        Queue.addQueryParameterToMap(data, Parameter.EVER_ID, this.getEverId());
+        Queue.addQueryParameterToMap(data, Parameter.USER_AGENT, this.getUserAgent());
+        Queue.addQueryParameterToMap(data, Parameter.CLIENT_HINT_USER_AGENT, this.getClientHintUserAgent());
+        Queue.addQueryParameterToMap(data, Parameter.CLIENT_HINT_USER_AGENT_FULL_VERSION_LIST, this.getClientHintUserAgentFullVersionList());
+        Queue.addQueryParameterToMap(data, Parameter.CLIENT_HINT_USER_AGENT_MODEL, this.getClientHintUserAgentModel());
+        Queue.addQueryParameterToMap(data, Parameter.CLIENT_HINT_USER_AGENT_MOBILE, this.getClientHintUserAgentMobile());
+        Queue.addQueryParameterToMap(data, Parameter.CLIENT_HINT_USER_AGENT_PLATFORM, this.getClientHintUserAgentPlatform());
+        Queue.addQueryParameterToMap(data, Parameter.CLIENT_HINT_USER_AGENT_PLATFORM_VERSION, this.getClientHintUserAgentPlatformVersion());
 
         const requestURI: string = this.getRequestURI();
         if (requestURI) {
-            data[Parameter.PAGE_URL] = 'https://' + requestURI;
+            Queue.addQueryParameterToMap(data, Parameter.PAGE_URL, 'https://' + requestURI);
         }
 
         const pageName: string = data[Parameter.PAGE_NAME] ? data[Parameter.PAGE_NAME] : this.getDefaultPageName();
@@ -220,7 +229,7 @@ export class Queue extends Enrichment {
 
         if (request) {
             const currentQueueSize: number = this.queue.length;
-            this.logger.log(Messages.ADD_THE_FOLLOWING_REQUEST_TO_QUEUE, currentQueueSize, request);
+            this.logger.debug(Messages.ADD_THE_FOLLOWING_REQUEST_TO_QUEUE, currentQueueSize, request);
 
             if (currentQueueSize >= this.maxBatchSize) {
                 await this.flush();
@@ -245,12 +254,12 @@ export class Queue extends Enrichment {
                         await this.delay(this.attemptTimeout);
                     } catch (e) {
                         /* istanbul ignore next */
-                        this.logger.log(Messages.GENERIC_ERROR, e.name, e.message);
+                        this.logger.error(Messages.GENERIC_ERROR, e.name, e.message);
                     }
                 }
             }
         } catch (e) {
-            this.logger.log(Messages.GENERIC_ERROR, e.name, e.message);
+            this.logger.error(Messages.GENERIC_ERROR, e.name, e.message);
         }
 
         return wasRequestSuccessful;

@@ -31,30 +31,39 @@ release:
 	make start TYPE="release" CONTAINER_VERSION="14.17.3"
 
 test-all:
-	make test-node10 && make test-node11 && make test-node12 && make test-node13 && make test-node14 && make test-node15 && make test-node16
+	make test-node10 && make test-node11 && make test-node12 && make test-node13 && make test-node14 && make test-node15 && make test-node16 && make test-node17 && make test-node18 && make test-node19
 
 test-latest:
 	make start TYPE="test" CONTAINER_VERSION="latest"
 
 test-node10:
-	make start TYPE="test" CONTAINER_VERSION="10.24.1"
+	make start TYPE="test" CONTAINER_VERSION="10"
 
 test-node11:
-	make start TYPE="test" CONTAINER_VERSION="11.15.0"
+	make start TYPE="test" CONTAINER_VERSION="11"
 
 test-node12:
-	make start TYPE="test" CONTAINER_VERSION="12.22.3"
+	make start TYPE="test" CONTAINER_VERSION="12"
 
 test-node13:
-	make start TYPE="test" CONTAINER_VERSION="13.14.0"
+	make start TYPE="test" CONTAINER_VERSION="13"
 
 test-node14:
-	make start TYPE="test" CONTAINER_VERSION="14.17.3"
+	make start TYPE="test" CONTAINER_VERSION="14"
 
 test-node15:
-	make start TYPE="test" CONTAINER_VERSION="15.14.0"
+	make start TYPE="test" CONTAINER_VERSION="15"
 
 test-node16:
-	make start TYPE="test" CONTAINER_VERSION="16.5.0"
+	make start TYPE="test" CONTAINER_VERSION="16"
+
+test-node17:
+	make start TYPE="test" CONTAINER_VERSION="17"
+
+test-node18:
+	make start TYPE="test" CONTAINER_VERSION="18"
+
+test-node19:
+	make start TYPE="test" CONTAINER_VERSION="19"
 
 .PHONY: test-all

@@ -88,7 +88,7 @@ export abstract class ACore extends ACleaner {
         this.queue = new Queue(this.config);
 
         const l: ILogger = this.config['logger'];
-        this.logger = new DebugLogger(l);
+        this.logger = new DebugLogger(l, this.config['logLevel']);
 
         this.deactivate = this.config['deactivate'];
         this.deactivateByInAndExclude = this.config['deactivateByInAndExclude'];
@@ -111,7 +111,7 @@ export abstract class ACore extends ACleaner {
      */
     public getUserIdCookie(pixelVersion: string, context: string): ICookie {
         if (!this.trackId || !this.trackDomain) {
-            this.logger.log(Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_COOKIE);
+            this.logger.error(Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_COOKIE);
             return null;
         }
 

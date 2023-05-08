@@ -72,7 +72,7 @@ export class ConsumerFile extends AConsumer {
                 message = Messages.CREATE_NEW_LOG_FILE;
             }
 
-            this.logger.log(
+            this.logger.debug(
                 message,
                 `${this.filePrefix}-${this.timestamp}${ConsumerFile.TEMPORARY_FILE_EXTENSION}`,
                 this.filePath
@@ -81,7 +81,7 @@ export class ConsumerFile extends AConsumer {
             this.fileName = newTempFileName;
             return await fs.open(newTempFilePath, 'a+');
         } catch (e) {
-            this.logger.log(Messages.GENERIC_ERROR, e.name, e.message);
+            this.logger.error(Messages.GENERIC_ERROR, e.name, e.message);
         }
 
         return null;
@@ -97,7 +97,7 @@ export class ConsumerFile extends AConsumer {
             content = (await file.readFile()).toString();
         } catch (e) {
             /* istanbul ignore next */
-            this.logger.log(Messages.GENERIC_ERROR, e.name, e.message);
+            this.logger.error(Messages.GENERIC_ERROR, e.name, e.message);
         }
 
         return content;
@@ -140,10 +140,10 @@ export class ConsumerFile extends AConsumer {
                 this.fileName = files[0];
                 file = await fs.open(`${this.filePath}/${this.fileName}`, 'a+');
                 this.timestamp = this.extractTimestamp();
-                this.logger.log(Messages.USE_EXISTING_LOG_FILE, files[0], this.filePath);
+                this.logger.debug(Messages.USE_EXISTING_LOG_FILE, files[0], this.filePath);
             }
         } catch (e) {
-            this.logger.log(Messages.DIRECTORY_NOT_EXIST, this.filePath);
+            this.logger.error(Messages.DIRECTORY_NOT_EXIST, this.filePath);
         }
 
         return file;
@@ -170,7 +170,7 @@ export class ConsumerFile extends AConsumer {
         try {
             await fs.stat(oldFileName);
 
-            this.logger.log(Messages.CANNOT_RENAME_TEMPORARY_FILE);
+            this.logger.error(Messages.CANNOT_RENAME_TEMPORARY_FILE);
             fileHandle = await this.getNewTempFile();
         } catch (e) {
             fileHandle = await this.getWriteableFile();
@@ -204,7 +204,7 @@ export class ConsumerFile extends AConsumer {
             await file.close();
         } catch (e) {
             /* istanbul ignore next */
-            this.logger.log(Messages.GENERIC_ERROR, e.name, e.message);
+            this.logger.error(Messages.GENERIC_ERROR, e.name, e.message);
         }
     }
 
@@ -237,10 +237,10 @@ export class ConsumerFile extends AConsumer {
                 await file.appendFile(payload);
 
                 const currentBatchSize: number = batchContent.length;
-                that.logger.log(Messages.WRITE_BATCH_DATA, that.fileName, currentBatchSize);
+                that.logger.debug(Messages.WRITE_BATCH_DATA, that.fileName, currentBatchSize);
             } catch (e) {
                 /* istanbul ignore next */
-                that.logger.log(Messages.GENERIC_ERROR, e.name, e.message);
+                that.logger.error(Messages.GENERIC_ERROR, e.name, e.message);
             }
 
             await that.close(file);

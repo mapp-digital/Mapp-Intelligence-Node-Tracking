@@ -52,7 +52,7 @@ export class ConfigProperties {
      * @param propertyName Name of the property
      * @param defaultValue Default value for the property
      *
-     * @return boolean
+     * @return number
      */
     public getIntegerProperty(propertyName: string, defaultValue: number): number {
         return this.getProperty(propertyName, defaultValue);
@@ -89,7 +89,7 @@ export class ConfigProperties {
      * @param propertyName Name of the property
      * @param defaultValue Default value for the property
      *
-     * @return MappIntelligenceConsumer
+     * @return Array<string | RegExp>
      */
     public getListProperty(propertyName: string, defaultValue: Array<string | RegExp>): Array<string | RegExp> {
         return this.getProperty(propertyName, defaultValue);

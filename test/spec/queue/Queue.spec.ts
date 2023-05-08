@@ -3,7 +3,7 @@ import {
     MappIntelligenceConfig,
     MappIntelligenceQueue,
     MappIntelligenceParameterMap,
-    MappIntelligenceConsumerType, IMappIntelligenceConsumer
+    MappIntelligenceConsumerType, IMappIntelligenceConsumer, MappIntelligenceLogLevel
 } from '../../../src/MappIntelligence';
 
 class TestCustomConsumer implements IMappIntelligenceConsumer {
@@ -11,7 +11,7 @@ class TestCustomConsumer implements IMappIntelligenceConsumer {
 
     public sendBatch(batchContent: Array<string>): Promise<boolean> {
         const that = this;
-        return new Promise(async function(resolve) {
+        return new Promise(async function (resolve) {
             for (const request of batchContent) {
                 that.requests.push(request);
             }
@@ -34,7 +34,8 @@ describe('MappIntelligenceQueue', () => {
 
     it('add tracking request', async () => {
         const mic = new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net');
-        mic.setLogger(customLogger);
+        mic.setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add('wt?p=300,0');
@@ -46,7 +47,8 @@ describe('MappIntelligenceQueue', () => {
 
     it('add empty string tracking data - 1', async () => {
         const mic = new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net');
-        mic.setLogger(customLogger);
+        mic.setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add('');
@@ -57,7 +59,8 @@ describe('MappIntelligenceQueue', () => {
 
     it('add empty string tracking data - 2', async () => {
         const mic = new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net');
-        mic.setLogger(customLogger);
+        mic.setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add(false);
@@ -68,7 +71,8 @@ describe('MappIntelligenceQueue', () => {
 
     it('add empty tracking data', async () => {
         const mic = new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net');
-        mic.setLogger(customLogger);
+        mic.setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add({'': 'test123'});
@@ -81,6 +85,7 @@ describe('MappIntelligenceQueue', () => {
     it('max batch size - 1', async () => {
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setMaxBatchSize(10);
 
         const queue = new MappIntelligenceQueue(mic.build());
@@ -107,6 +112,7 @@ describe('MappIntelligenceQueue', () => {
     it('max batch size - 2', async () => {
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setMaxBatchSize(10);
 
         const queue = new MappIntelligenceQueue(mic.build());
@@ -135,6 +141,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setUserAgent(userAgent);
 
         const queue = new MappIntelligenceQueue(mic.build());
@@ -153,6 +160,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setUserAgent(userAgent);
 
         const queue = new MappIntelligenceQueue(mic.build());
@@ -171,6 +179,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setUserAgent(userAgent);
 
         const queue = new MappIntelligenceQueue(mic.build());
@@ -182,11 +191,116 @@ describe('MappIntelligenceQueue', () => {
         expect(requests[0]).toMatch(/.+&X-WT-UA=test$/);
     });
 
+    it('with client hints', async () => {
+        const clientHintUserAgent = "%22Chromium%22%3Bv%3D%22112%22%2C%20%22Google%20Chrome%22%3Bv%3D%22112%22%2C%20%22Not%3AA-Brand%22%3Bv%3D%2299%20";
+        const clientHintUserAgentFullVersionList = "%22Chromium%22%3Bv%3D%22110.0.5481.65%22%2C%20%22Not%20A(Brand%22%3Bv%3D%2224.0.0.0%22%2C%20%22Google%20Chrome%22%3Bv%3D%22110.0.5481.65%22";
+        const clientHintUserAgentMobile = "%3F1";
+        const clientHintUserAgentModel = "%22SM-A715F%22";
+        const clientHintUserAgentPlatform = "%22macOS%22";
+        const clientHintUserAgentPlatformVersion = "%2213.0.0%22";
+
+        const mic = (new MappIntelligenceConfig("111111111111111", "analytics01.wt-eu02.net"))
+            .setLogger(MappIntelligenceUnitUtil.getCustomLogger())
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
+            .setClientHintUserAgent(clientHintUserAgent)
+            .setClientHintUserAgentFullVersionList(clientHintUserAgentFullVersionList)
+            .setClientHintUserAgentMobile(clientHintUserAgentMobile)
+            .setClientHintUserAgentModel(clientHintUserAgentModel)
+            .setClientHintUserAgentPlatform(clientHintUserAgentPlatform)
+            .setClientHintUserAgentPlatformVersion(clientHintUserAgentPlatformVersion);
+
+        const queue = new MappIntelligenceQueue(mic.build());
+        await queue.add({});
+
+        const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(queue);
+        expect(requests.length).toBe(1);
+        expect(requests[0]).toMatch(/^wt\?p=600,0,,,,,[0-9]{13},0,,&.+/);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA=" + clientHintUserAgent);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-FULL-VERSION-LIST=" + clientHintUserAgentFullVersionList);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-MODEL=" + clientHintUserAgentModel);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-MOBILE=" + clientHintUserAgentMobile);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM=" + clientHintUserAgentPlatform);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM_VERSION=" + clientHintUserAgentPlatformVersion);
+    });
+
+    it('with client hints 2', async () => {
+        const clientHintUserAgent = "%22Chromium%22%3Bv%3D%22112%22%2C%20%22Google%20Chrome%22%3Bv%3D%22112%22%2C%20%22Not%3AA-Brand%22%3Bv%3D%2299%20";
+        const clientHintUserAgentFullVersionList = "%22Chromium%22%3Bv%3D%22110.0.5481.65%22%2C%20%22Not%20A(Brand%22%3Bv%3D%2224.0.0.0%22%2C%20%22Google%20Chrome%22%3Bv%3D%22110.0.5481.65%22";
+        const clientHintUserAgentMobile = "%3F1";
+        const clientHintUserAgentModel = "%22SM-A715F%22";
+        const clientHintUserAgentPlatform = "%22macOS%22";
+        const clientHintUserAgentPlatformVersion = "%2213.0.0%22";
+
+        const mic = (new MappIntelligenceConfig("111111111111111", "analytics01.wt-eu02.net"))
+            .setLogger(MappIntelligenceUnitUtil.getCustomLogger())
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
+            .setClientHintUserAgent(clientHintUserAgent)
+            .setClientHintUserAgentFullVersionList(clientHintUserAgentFullVersionList)
+            .setClientHintUserAgentMobile(clientHintUserAgentMobile)
+            .setClientHintUserAgentModel(clientHintUserAgentModel)
+            .setClientHintUserAgentPlatform(clientHintUserAgentPlatform)
+            .setClientHintUserAgentPlatformVersion(clientHintUserAgentPlatformVersion);
+
+        const queue = new MappIntelligenceQueue(mic.build());
+        await queue.add('wt?p=300,0');
+
+        const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(queue);
+        expect(requests.length).toBe(1);
+        expect(requests[0]).toMatch(/^wt\?p=300,0&.+/);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA=" + clientHintUserAgent);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-FULL-VERSION-LIST=" + clientHintUserAgentFullVersionList);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-MODEL=" + clientHintUserAgentModel);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-MOBILE=" + clientHintUserAgentMobile);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM=" + clientHintUserAgentPlatform);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM_VERSION=" + clientHintUserAgentPlatformVersion);
+    });
+
+    it('with client hints 3', async () => {
+        const clientHintUserAgent = "%22Chromium%22%3Bv%3D%22112%22%2C%20%22Google%20Chrome%22%3Bv%3D%22112%22%2C%20%22Not%3AA-Brand%22%3Bv%3D%2299%20";
+        const clientHintUserAgentFullVersionList = "%22Chromium%22%3Bv%3D%22110.0.5481.65%22%2C%20%22Not%20A(Brand%22%3Bv%3D%2224.0.0.0%22%2C%20%22Google%20Chrome%22%3Bv%3D%22110.0.5481.65%22";
+        const clientHintUserAgentMobile = "%3F1";
+        const clientHintUserAgentModel = "%22SM-A715F%22";
+        const clientHintUserAgentPlatform = "%22macOS%22";
+        const clientHintUserAgentPlatformVersion = "%2213.0.0%22";
+
+        const mic = (new MappIntelligenceConfig("111111111111111", "analytics01.wt-eu02.net"))
+            .setLogger(MappIntelligenceUnitUtil.getCustomLogger())
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
+            .setClientHintUserAgent(clientHintUserAgent)
+            .setClientHintUserAgentFullVersionList(clientHintUserAgentFullVersionList)
+            .setClientHintUserAgentMobile(clientHintUserAgentMobile)
+            .setClientHintUserAgentModel(clientHintUserAgentModel)
+            .setClientHintUserAgentPlatform(clientHintUserAgentPlatform)
+            .setClientHintUserAgentPlatformVersion(clientHintUserAgentPlatformVersion);
+
+        const queue = new MappIntelligenceQueue(mic.build());
+        await queue.add(
+            'wt?p=300,0'
+            + '&X-WT-SEC-CH-UA=sec-ch-ua'
+            + '&X-WT-SEC-CH-UA-FULL-VERSION-LIST=sec-ch-ua-full-version-list'
+            + '&X-WT-SEC-CH-UA-MODEL=sec-ch-ua-model'
+            + '&X-WT-SEC-CH-UA-MOBILE=sec-ch-ua-mobile'
+            + '&X-WT-SEC-CH-UA-PLATFORM=sec-ch-ua-platform'
+            + '&X-WT-SEC-CH-UA-PLATFORM_VERSION=sec-ch-ua-platform-version'
+        );
+
+        const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(queue);
+        expect(requests.length).toBe(1);
+        expect(requests[0]).toMatch(/^wt\?p=300,0&.+/);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA=sec-ch-ua");
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-FULL-VERSION-LIST=sec-ch-ua-full-version-list");
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-MODEL=sec-ch-ua-model");
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-MOBILE=sec-ch-ua-mobile");
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM=sec-ch-ua-platform");
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM_VERSION=sec-ch-ua-platform-version");
+    });
+
     it('with remote addr - 1', async () => {
         const remoteAddr: string = '127.0.0.1';
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setRemoteAddress(remoteAddr);
 
         const queue = new MappIntelligenceQueue(mic.build());
@@ -203,6 +317,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setRemoteAddress(remoteAddr);
 
         const queue = new MappIntelligenceQueue(mic.build());
@@ -219,6 +334,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setRemoteAddress(remoteAddr);
 
         const queue = new MappIntelligenceQueue(mic.build());
@@ -235,6 +351,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setRequestURL(requestURL);
 
         const queue = new MappIntelligenceQueue(mic.build());
@@ -252,7 +369,8 @@ describe('MappIntelligenceQueue', () => {
         const smartPixelEverId: string = '2157070685656224066';
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .addCookie('wtstp_eid', smartPixelEverId)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add({});
@@ -266,7 +384,8 @@ describe('MappIntelligenceQueue', () => {
         const trackServerEverId: string = '6157070685656224066';
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .addCookie('wteid_111111111111111', trackServerEverId)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add({});
@@ -283,7 +402,8 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .addCookie('wt3_eid', oldPixelEverIdCookie)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add({});
@@ -301,7 +421,8 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .addCookie('wt3_eid', oldPixelEverIdCookie)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add({});
@@ -316,6 +437,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setRequestURL(requestURL);
 
         const queue = new MappIntelligenceQueue(mic.build());
@@ -334,6 +456,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setRequestURL(requestURL)
             .addUseParamsForDefaultPageName('aa')
             .addUseParamsForDefaultPageName('bb')
@@ -353,6 +476,7 @@ describe('MappIntelligenceQueue', () => {
     it('default page name without params - 2', async () => {
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .addUseParamsForDefaultPageName('aa')
             .addUseParamsForDefaultPageName('bb')
             .addUseParamsForDefaultPageName('cc');
@@ -372,6 +496,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setRequestURL(requestURL)
             .addUseParamsForDefaultPageName('aa')
             .addUseParamsForDefaultPageName('bb')
@@ -388,7 +513,8 @@ describe('MappIntelligenceQueue', () => {
 
     it('empty referrer', async () => {
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add({});
@@ -403,6 +529,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setReferrerURL(referrerURL);
 
         const queue = new MappIntelligenceQueue(mic.build());
@@ -420,6 +547,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setReferrerURL(referrerURL)
             .setDomain(['sub.domain.tld']);
 
@@ -438,6 +566,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setReferrerURL(referrerURL);
 
         const queue = new MappIntelligenceQueue(mic.build());
@@ -453,6 +582,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setReferrerURL(referrerURL)
             .setDomain(['sub.domain.tld']);
 
@@ -469,6 +599,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setReferrerURL(referrerURL)
             .setDomain([/.+\.domain\.tld/]);
 
@@ -485,6 +616,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setReferrerURL(referrerURL)
             .setDomain([/[a-z]{3}\.domain\.tld\)/]);
 
@@ -503,6 +635,7 @@ describe('MappIntelligenceQueue', () => {
 
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setReferrerURL(referrerURL)
             .setDomain(['subsub.domain.tld']);
 
@@ -527,7 +660,8 @@ describe('MappIntelligenceQueue', () => {
     it('undefined consumer type', async () => {
         const mic = (new MappIntelligenceConfig('123451234512345', 'analytics01.wt-eu02.net'))
             .setConsumerType('PRINT')
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add('wt?p=300,0');
@@ -537,7 +671,8 @@ describe('MappIntelligenceQueue', () => {
 
     it('flush empty queue with debug', async () => {
         const mic = (new MappIntelligenceConfig())
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
 
@@ -550,7 +685,8 @@ describe('MappIntelligenceQueue', () => {
 
     it('flush queue failed', async () => {
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add('wt?p=300,0');
@@ -567,7 +703,8 @@ describe('MappIntelligenceQueue', () => {
 
     it('flush HTTP queue success', async () => {
         const mic = (new MappIntelligenceConfig('123451234512345', 'analytics01.wt-eu02.net'))
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add('wt?p=300,0');
@@ -589,7 +726,8 @@ describe('MappIntelligenceQueue', () => {
     it('flush cURL queue success', async () => {
         const mic = (new MappIntelligenceConfig('123451234512345', 'analytics01.wt-eu02.net'))
             .setConsumerType(MappIntelligenceConsumerType.FORK_CURL)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add('wt?p=300,0');
@@ -616,7 +754,8 @@ describe('MappIntelligenceQueue', () => {
             .setConsumerType(MappIntelligenceConsumerType.FILE)
             .setFilePath(tempFilePath)
             .setFilePrefix(tempFilePrefix)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add('wt?p=300,0');
@@ -644,7 +783,8 @@ describe('MappIntelligenceQueue', () => {
         const mic = (new MappIntelligenceConfig('123451234512345', 'analytics01.wt-eu02.net'))
             .setConsumerType(MappIntelligenceConsumerType.CUSTOM)
             .setConsumer(tcc)
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const queue = new MappIntelligenceQueue(mic.build());
         await queue.add('wt?p=300,0');

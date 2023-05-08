@@ -4,6 +4,7 @@
         "trackDomain": "analytics01.wt-eu02.net",
         "deactivate": false,
         "debug": false,
+        "logLevel": "debug",
         "domain": ["sub.domain.tld", "foo.bar", 8, null],
         "useParamsForDefaultPageName": ["aa", "bb", "cc", 8, null],
         "containsInclude": ["foo", "bar", 8, null],

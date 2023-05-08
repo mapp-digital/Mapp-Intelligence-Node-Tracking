@@ -87,7 +87,7 @@ export class CLIFile {
                 return regex.test(value);
             });
         } catch (e) {
-            return [];
+            return null;
         }
     }
 
@@ -120,7 +120,7 @@ export class CLIFile {
      */
     public static async getLogFiles(filePath: string, filePrefix: string): Promise<Array<string>> {
         const files = await CLIFile.getFiles(filePath, filePrefix, CLIFile.LOG_FILE_EXTENSION);
-        if (!files || files.length === 0) {
+        if (!files) {
             const msg: string = Messages.REQUEST_LOG_FILES_NOT_FOUND.replace(/\$\{0}/, filePath);
             throw new CLIException(msg);
         }

@@ -1,6 +1,6 @@
 {
     "name": "@mapp-intelligence/node",
-    "version": "0.0.5",
+    "version": "0.1.0",
     "description": "Mapp Intelligence - Server-side NodeJS tracking library",
     "author": "Mapp Digital c/o Webtrekk GmbH",
     "license": "MIT",
@@ -24,7 +24,6 @@
         "release": "npm run test && npm run build && node ./scripts/release/index.js",
         "test": "jest --config ./jest.config.js"
     },
-    "dependencies": {},
     "devDependencies": {
         "@babel/core": "^7.4.3",
         "@babel/preset-env": "^7.4.3",

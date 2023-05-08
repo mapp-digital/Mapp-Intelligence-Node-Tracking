@@ -17,6 +17,7 @@ export declare class Config {
     private deactivate;
     private deactivateByInAndExclude;
     private logger;
+    private logLevel;
     private consumer;
     private consumerType;
     private filePath;
@@ -31,6 +32,12 @@ export declare class Config {
     private forceSSL;
     private useParamsForDefaultPageName;
     private userAgent;
+    private clientHintUserAgent;
+    private clientHintUserAgentFullVersionList;
+    private clientHintUserAgentModel;
+    private clientHintUserAgentMobile;
+    private clientHintUserAgentPlatform;
+    private clientHintUserAgentPlatformVersion;
     private remoteAddress;
     private referrerURL;
     private requestURL;
@@ -50,6 +57,12 @@ export declare class Config {
     setTrackId(tId: string): Config;
     setTrackDomain(tDomain: string): Config;
     setUserAgent(ua: string): Config;
+    setClientHintUserAgent(ch: string): Config;
+    setClientHintUserAgentFullVersionList(ch: string): Config;
+    setClientHintUserAgentModel(ch: string): Config;
+    setClientHintUserAgentMobile(ch: string): Config;
+    setClientHintUserAgentPlatform(ch: string): Config;
+    setClientHintUserAgentPlatformVersion(ch: string): Config;
     setRemoteAddress(ra: string): Config;
     setReferrerURL(refURL: string): Config;
     setRequestURL(rURL: string): Config;
@@ -60,6 +73,7 @@ export declare class Config {
     setDomain(d: Array<string | RegExp>): Config;
     addDomain(d: string | RegExp): Config;
     setLogger(l: ILogger): Config;
+    setLogLevel(ll: number | string): Config;
     setDebug(d: boolean): Config;
     setDeactivate(d: boolean): Config;
     setConsumerType(cType: string): Config;

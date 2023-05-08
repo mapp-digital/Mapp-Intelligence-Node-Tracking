@@ -5,6 +5,14 @@ export class Parameter {
     public static readonly USER_AGENT: string = 'X-WT-UA';
     public static readonly USER_IP: string = 'X-WT-IP';
 
+    // user agent client hints
+    public static readonly CLIENT_HINT_USER_AGENT: string = "X-WT-SEC-CH-UA";
+    public static readonly CLIENT_HINT_USER_AGENT_FULL_VERSION_LIST: string = "X-WT-SEC-CH-UA-FULL-VERSION-LIST";
+    public static readonly CLIENT_HINT_USER_AGENT_MODEL: string = "X-WT-SEC-CH-UA-MODEL";
+    public static readonly CLIENT_HINT_USER_AGENT_MOBILE: string = "X-WT-SEC-CH-UA-MOBILE";
+    public static readonly CLIENT_HINT_USER_AGENT_PLATFORM: string = "X-WT-SEC-CH-UA-PLATFORM";
+    public static readonly CLIENT_HINT_USER_AGENT_PLATFORM_VERSION: string = "X-WT-SEC-CH-UA-PLATFORM_VERSION";
+
     // predefined parameter
     public static readonly EVER_ID: string = 'eid';
     public static readonly CUSTOM_EVER_ID: string = 'ceid';

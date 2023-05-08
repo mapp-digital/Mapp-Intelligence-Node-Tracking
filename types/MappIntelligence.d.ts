@@ -8,6 +8,7 @@ export interface IMappIntelligenceCookie extends ICookie {
 export interface IMappIntelligenceLogger extends ILogger {
 }
 export { CustomParameter as MappIntelligenceCustomParameter } from './CustomParameter';
+export { LogLevel as MappIntelligenceLogLevel } from './LogLevel';
 export { Parameter as MappIntelligenceParameter } from './Parameter';
 export { Config as MappIntelligenceConfig } from './config/Config';
 export { ConsumerType as MappIntelligenceConsumerType } from './consumer/ConsumerType';

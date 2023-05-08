@@ -37,7 +37,7 @@ export class CLICronjob {
     /**
      * Activates the debug mode.
      */
-    private logger: ILogger;
+    private logger: DebugLogger;
 
     /**
      * @param config Mapp Intelligence config or command line arguments
@@ -69,7 +69,7 @@ export class CLICronjob {
         this.deactivate = this.mic[CLIOptions.DEACTIVATE];
 
         const l: ILogger = this.mic[CLIOptions.LOGGER];
-        this.logger = new DebugLogger(l);
+        this.logger = new DebugLogger(l, config['logLevel']);
 
         this.mic[CLIOptions.CONSUMER_TYPE] = ConsumerType.HTTP_CLIENT;
         this.mic[CLIOptions.LOGGER] = this.logger;
@@ -91,6 +91,7 @@ export class CLICronjob {
 
             .addOption('f', CLIOptions.FILE_PATH, true, Messages.OPTION_FILE_PATH)
             .addOption('p', CLIOptions.FILE_PREFIX, true, Messages.OPTION_FILE_PREFIX)
+            .addOption('l', CLIOptions.LOG_LEVEL, true, Messages.OPTION_LOG_LEVEL)
 
             .addOption('', CLIOptions.DEACTIVATE, false, Messages.OPTION_DEACTIVATE)
             .addOption('', CLIOptions.HELP, false, Messages.OPTION_HELP)
@@ -126,6 +127,10 @@ export class CLICronjob {
 
             if (options.hasOption(CLIOptions.CONFIG)) {
                 mappConfig = new Config(options.getOptionValue(CLIOptions.CONFIG));
+            }
+
+            if (options.hasOption(CLIOptions.LOG_LEVEL)) {
+                mappConfig.setLogLevel(options.getOptionValue(CLIOptions.LOG_LEVEL));
             }
 
             if (options.hasOption(CLIOptions.DEBUG)) {
@@ -192,7 +197,7 @@ export class CLICronjob {
      */
     public async run(): Promise<number> {
         if (this.deactivate) {
-            this.logger.log(Messages.TRACKING_IS_DEACTIVATED);
+            this.logger.info(Messages.TRACKING_IS_DEACTIVATED);
             return CLICronjob.EXIT_STATUS_SUCCESS;
         }
 

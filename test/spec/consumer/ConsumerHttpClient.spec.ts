@@ -1,6 +1,6 @@
 import {MappIntelligenceUnitUtil, CustomLogger} from '../_utils/MappIntelligenceUnitUtil'
 
-import {MappIntelligenceConfig} from '../../../src/MappIntelligence';
+import {MappIntelligenceConfig, MappIntelligenceLogLevel} from '../../../src/MappIntelligence';
 import {ConsumerHttpClient} from '../../../src/consumer/ConsumerHttpClient';
 
 describe('ConsumerHttpClient', () => {
@@ -71,7 +71,8 @@ describe('ConsumerHttpClient', () => {
 
     it('new consumer HTTP client', async () => {
         new ConsumerHttpClient({
-            logger: customLogger
+            logger: customLogger,
+            logLevel: MappIntelligenceLogLevel.DEBUG
         });
 
         expect(customLogger.getMessages().trim()).toBe('');
@@ -79,7 +80,8 @@ describe('ConsumerHttpClient', () => {
 
     it('batch request responding 200 via HTTPS', async () => {
         const mic = (new MappIntelligenceConfig('123451234512345', 'analytics01.wt-eu02.net'))
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerHttpClient(mic.build());
 
         const data = ['wt?p=300,0'];
@@ -92,7 +94,8 @@ describe('ConsumerHttpClient', () => {
 
     it('batch request responding timeout exception', async () => {
         const mic = (new MappIntelligenceConfig('123451234512345', 'www.google.com:81'))
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerHttpClient(mic.build());
 
         const data = ['wt?p=300,0'];
@@ -104,7 +107,8 @@ describe('ConsumerHttpClient', () => {
 
     it('batch request responding unknown host exception', async () => {
         const mic = (new MappIntelligenceConfig('123451234512345', 'test-batch-request.webtrekk-tracking-test.net'))
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerHttpClient(mic.build());
 
         const data = ['wt?p=300,0'];
@@ -117,6 +121,7 @@ describe('ConsumerHttpClient', () => {
     it('batch request responding 200 via HTTP', async () => {
         const mic = (new MappIntelligenceConfig('123451234512345', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setForceSSL(false);
         const consumer = new ConsumerHttpClient(mic.build());
 
@@ -131,6 +136,7 @@ describe('ConsumerHttpClient', () => {
     it('batch request responding 404', async () => {
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setForceSSL(false);
         const consumer = new ConsumerHttpClient(mic.build());
 
@@ -144,7 +150,8 @@ describe('ConsumerHttpClient', () => {
 
     it('max batch size', async () => {
         const mic = (new MappIntelligenceConfig())
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerHttpClient(mic.build());
 
         expect(await consumer.sendBatch(contentMaxBatchSize)).toBeFalsy();
@@ -153,7 +160,8 @@ describe('ConsumerHttpClient', () => {
 
     it('max payload size', async () => {
         const mic = (new MappIntelligenceConfig())
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const consumer = new ConsumerHttpClient(mic.build());
 
         expect(await consumer.sendBatch(maxPayloadSize)).toBeFalsy();

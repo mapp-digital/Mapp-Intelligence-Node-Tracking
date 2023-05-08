@@ -10,7 +10,7 @@ const tracking = (req, res) => {
     const mappConfig = new MappIntelligenceConfig()
         .setTrackId('123451234512345')
         .setTrackDomain('analytics01.wt-eu02.net')
-        .setLogger(new CustomLogger())
+        // .setLogger(new CustomLogger())
         .setFilePath('./log/')
         .setConsumerType(MappIntelligenceConsumerType.FILE)
         .setMaxFileLines(10)

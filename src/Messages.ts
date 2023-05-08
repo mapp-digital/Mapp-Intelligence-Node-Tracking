@@ -22,7 +22,7 @@ export class Messages {
     public static readonly CURRENT_QUEUE_STATUS: string = 'Batch of ${0} req. sent, current queue size is ${1} req.';
     public static readonly QUEUE_IS_EMPTY: string = 'MappIntelligenceQueue is empty';
     public static readonly ADD_THE_FOLLOWING_REQUEST_TO_QUEUE: string = 'Add the following request to queue (${0} req.): ${1}';
-    public static readonly MAPP_INTELLIGENCE: string = '[Mapp Intelligence]: ';
+    public static readonly MAPP_INTELLIGENCE: string = 'Mapp Intelligence';
 
     // Mapp Intelligence cronjob
     public static readonly REQUIRED_TRACK_ID: string = 'Argument \'-i\' or alternative \'--trackId\' are required';
@@ -36,6 +36,7 @@ export class Messages {
     public static readonly OPTION_DEACTIVATE: string = 'Deactivate the tracking functionality.';
     public static readonly OPTION_HELP: string = 'Display the help (this text) and exit.';
     public static readonly OPTION_DEBUG: string = 'Activates the debug mode. The debug mode sends messages to the command line.';
+    public static readonly OPTION_LOG_LEVEL: string = 'If you set this to a particular level, it will show all messages at that level and at higher levels of importance. You can set the following values: "DEBUG", "INFO", "WARN", "ERROR", "FATAL" and "NONE".';
     public static readonly OPTION_VERSION: string = 'Display version and exit.';
     public static readonly REQUEST_LOG_FILES_NOT_FOUND: string = 'Request log files "${0}" not found';
     public static readonly RENAME_EXPIRED_TEMPORARY_FILE: string = 'Rename expired temporary file into log file';

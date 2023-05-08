@@ -7,6 +7,7 @@ export declare class CLIOptions {
     static readonly FILE_PREFIX: string;
     static readonly DEACTIVATE: string;
     static readonly LOGGER: string;
+    static readonly LOG_LEVEL: string;
     static readonly HELP: string;
     static readonly DEBUG: string;
     static readonly VERSION: string;

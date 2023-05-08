@@ -1,9 +1,9 @@
 import {CLIOptions} from "./CLIOptions";
 import {CLIFile} from "./CLIFile";
 
-import {ILogger} from "../ILogger";
 import {Queue} from "../queue/Queue";
 import {Messages} from "../Messages";
+import {DebugLogger} from "../DebugLogger";
 
 export class CLIFileRotationTransmitter {
     /**
@@ -30,7 +30,7 @@ export class CLIFileRotationTransmitter {
     /**
      * Activates the debug mode.
      */
-    private logger: ILogger;
+    private logger: DebugLogger;
 
     /**
      * @param config Mapp Intelligence config or command line arguments
@@ -75,14 +75,18 @@ export class CLIFileRotationTransmitter {
      */
     public async send(): Promise<number> {
         if (await CLIFile.checkTemporaryFiles(this.filePath, this.filePrefix)) {
-            this.logger.log(Messages.RENAME_EXPIRED_TEMPORARY_FILE);
+            this.logger.debug(Messages.RENAME_EXPIRED_TEMPORARY_FILE);
         }
 
         let files;
         try {
             files = await CLIFile.getLogFiles(this.filePath, this.filePrefix);
+            if (files.length <= 0) {
+                this.logger.info(Messages.REQUEST_LOG_FILES_NOT_FOUND, this.filePath);
+                return CLIFileRotationTransmitter.EXIT_STATUS_FAIL;
+            }
         } catch (e) {
-            this.logger.log(e.message);
+            this.logger.error(e.message);
             return CLIFileRotationTransmitter.EXIT_STATUS_FAIL;
         }
 

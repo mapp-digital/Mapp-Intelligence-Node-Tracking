@@ -20,7 +20,9 @@ services:
         USER_ID: ${USER_ID}
         GROUP_ID: ${GROUP_ID}
       dockerfile: DockerfileShop
+    hostname: sgu.pixel-test.com
     ports:
-      - 8081:8081
+      - 80:80
+      - 443:443
     volumes:
       - "./:/app"

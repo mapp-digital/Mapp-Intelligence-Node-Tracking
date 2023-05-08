@@ -24,7 +24,7 @@ export class ConsumerForkCurl extends AConsumer {
 
             const url: string = that.getUrl();
             const currentBatchSize: number = batchContent.length;
-            that.logger.log(Messages.SEND_BATCH_DATA, url, currentBatchSize);
+            that.logger.debug(Messages.SEND_BATCH_DATA, url, currentBatchSize);
 
             let command = 'curl -X POST -H "Content-Type: text/plain"';
             command += ` -d "${payload}"`;
@@ -32,18 +32,18 @@ export class ConsumerForkCurl extends AConsumer {
             command += ' -s -o /dev/null -w "%{http_code}"';
             command += ` "${url}"`;
 
-            that.logger.log(Messages.EXECUTE_COMMAND, command);
+            that.logger.debug(Messages.EXECUTE_COMMAND, command);
 
             exec(command, function(error, stdout, stderr) {
                 if (error) {
-                    that.logger.log(Messages.GENERIC_ERROR, error.name, error.code);
+                    that.logger.error(Messages.GENERIC_ERROR, error.name, error.code);
                 }
 
                 const httpStatus = parseInt(stdout);
-                that.logger.log(Messages.BATCH_REQUEST_STATUS, httpStatus);
+                that.logger.debug(Messages.BATCH_REQUEST_STATUS, httpStatus);
 
                 if (httpStatus !== 200) {
-                    that.logger.log(Messages.BATCH_RESPONSE_TEXT, httpStatus, stderr);
+                    that.logger.warn(Messages.BATCH_RESPONSE_TEXT, httpStatus, stderr);
                     return resolve(false);
                 }
 

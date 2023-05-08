@@ -9,6 +9,8 @@ export declare class Queue extends Enrichment {
         [key: string]: any;
     });
     private static buildQueryString;
+    private static addQueryParameterToMap;
+    private static addNotExistingQueryParameterToMap;
     private sendBatch;
     private flushQueue;
     private delay;

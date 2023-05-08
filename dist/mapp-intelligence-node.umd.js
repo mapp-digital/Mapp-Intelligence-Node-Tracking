@@ -35,11 +35,46 @@
         return CustomParameter;
     }());
 
+    var LogLevel = (function () {
+        function LogLevel() {
+        }
+        LogLevel.getName = function (ll) {
+            for (var p in LogLevel) {
+                var prop = p + '';
+                var logLvl = LogLevel[prop];
+                if (logLvl === ll) {
+                    return prop;
+                }
+            }
+            return null;
+        };
+        LogLevel.getValue = function (ll) {
+            var logLvl = ll.toUpperCase();
+            if (LogLevel[logLvl]) {
+                return LogLevel[logLvl];
+            }
+            return -1;
+        };
+        LogLevel.NONE = 0;
+        LogLevel.FATAL = 1;
+        LogLevel.ERROR = 2;
+        LogLevel.WARN = 3;
+        LogLevel.INFO = 4;
+        LogLevel.DEBUG = 5;
+        return LogLevel;
+    }());
+
     var Parameter = (function () {
         function Parameter() {
         }
         Parameter.USER_AGENT = 'X-WT-UA';
         Parameter.USER_IP = 'X-WT-IP';
+        Parameter.CLIENT_HINT_USER_AGENT = "X-WT-SEC-CH-UA";
+        Parameter.CLIENT_HINT_USER_AGENT_FULL_VERSION_LIST = "X-WT-SEC-CH-UA-FULL-VERSION-LIST";
+        Parameter.CLIENT_HINT_USER_AGENT_MODEL = "X-WT-SEC-CH-UA-MODEL";
+        Parameter.CLIENT_HINT_USER_AGENT_MOBILE = "X-WT-SEC-CH-UA-MOBILE";
+        Parameter.CLIENT_HINT_USER_AGENT_PLATFORM = "X-WT-SEC-CH-UA-PLATFORM";
+        Parameter.CLIENT_HINT_USER_AGENT_PLATFORM_VERSION = "X-WT-SEC-CH-UA-PLATFORM_VERSION";
         Parameter.EVER_ID = 'eid';
         Parameter.CUSTOM_EVER_ID = 'ceid';
         Parameter.PAGE_URL = 'pu';
@@ -121,7 +156,7 @@
     function addProperties(that, data, properties, type) {
         for (var _i = 0, properties_1 = properties; _i < properties_1.length; _i++) {
             var prop = properties_1[_i];
-            if (typeof data[prop] === type) {
+            if (!that[prop] && typeof data[prop] === type) {
                 that[prop] = data[prop];
             }
         }
@@ -138,6 +173,7 @@
         function Tracking(data) {
             this.trackId = "";
             this.trackDomain = "";
+            this.logLevel = "";
             this.deactivate = false;
             this.debug = false;
             this.domain = [];
@@ -149,6 +185,7 @@
             this.matchesIncludeRegExp = [];
             this.matchesExcludeRegExp = [];
             addProperties(this, data, Tracking.STRING_PROPERTIES, 'string');
+            addProperties(this, data, Tracking.NUMBER_PROPERTIES, 'number');
             addProperties(this, data, Tracking.BOOLEAN_PROPERTIES, 'boolean');
             addArrayProperties(this, data, Tracking.ARRAY_STRING_PROPERTIES, function (value) {
                 return typeof value === 'string';
@@ -177,6 +214,7 @@
             return {
                 trackId: this.trackId,
                 trackDomain: this.trackDomain,
+                logLevel: this.logLevel,
                 deactivate: this.deactivate,
                 debug: this.debug,
                 domain: this.domain,
@@ -187,7 +225,8 @@
                 matchesExclude: this.matchesExcludeRegExp
             };
         };
-        Tracking.STRING_PROPERTIES = ['trackId', 'trackDomain'];
+        Tracking.STRING_PROPERTIES = ['trackId', 'trackDomain', 'logLevel'];
+        Tracking.NUMBER_PROPERTIES = ['logLevel'];
         Tracking.BOOLEAN_PROPERTIES = ['deactivate', 'debug'];
         Tracking.ARRAY_STRING_PROPERTIES = [
             'useParamsForDefaultPageName', 'containsInclude', 'containsExclude'
@@ -303,6 +342,7 @@
         Properties.TRACK_DOMAIN = 'tracking.trackDomain';
         Properties.DEACTIVATE = 'tracking.deactivate';
         Properties.DEBUG = 'tracking.debug';
+        Properties.LOG_LEVEL = 'tracking.logLevel';
         Properties.DOMAIN = 'tracking.domain';
         Properties.USE_PARAMS_FOR_DEFAULT_PAGE_NAME = 'tracking.useParamsForDefaultPageName';
         Properties.CONTAINS_INCLUDE = 'tracking.containsInclude';
@@ -357,7 +397,7 @@
         Messages.CURRENT_QUEUE_STATUS = 'Batch of ${0} req. sent, current queue size is ${1} req.';
         Messages.QUEUE_IS_EMPTY = 'MappIntelligenceQueue is empty';
         Messages.ADD_THE_FOLLOWING_REQUEST_TO_QUEUE = 'Add the following request to queue (${0} req.): ${1}';
-        Messages.MAPP_INTELLIGENCE = '[Mapp Intelligence]: ';
+        Messages.MAPP_INTELLIGENCE = 'Mapp Intelligence';
         Messages.REQUIRED_TRACK_ID = 'Argument \'-i\' or alternative \'--trackId\' are required';
         Messages.REQUIRED_TRACK_DOMAIN = 'Argument \'-d\' or alternative \'--trackDomain\' are required';
         Messages.UNSUPPORTED_OPTION = 'Unsupported config option';
@@ -369,6 +409,7 @@
         Messages.OPTION_DEACTIVATE = 'Deactivate the tracking functionality.';
         Messages.OPTION_HELP = 'Display the help (this text) and exit.';
         Messages.OPTION_DEBUG = 'Activates the debug mode. The debug mode sends messages to the command line.';
+        Messages.OPTION_LOG_LEVEL = 'If you set this to a particular level, it will show all messages at that level and at higher levels of importance. You can set the following values: "DEBUG", "INFO", "WARN", "ERROR", "FATAL" and "NONE".';
         Messages.OPTION_VERSION = 'Display version and exit.';
         Messages.REQUEST_LOG_FILES_NOT_FOUND = 'Request log files "${0}" not found';
         Messages.RENAME_EXPIRED_TEMPORARY_FILE = 'Rename expired temporary file into log file';
@@ -389,6 +430,7 @@
             this.domain = [];
             this.deactivate = false;
             this.deactivateByInAndExclude = false;
+            this.logLevel = LogLevel.ERROR;
             this.consumerType = ConsumerType.HTTP_CLIENT;
             this.filePath = '';
             this.filePrefix = '';
@@ -402,6 +444,12 @@
             this.forceSSL = true;
             this.useParamsForDefaultPageName = [];
             this.userAgent = '';
+            this.clientHintUserAgent = '';
+            this.clientHintUserAgentFullVersionList = '';
+            this.clientHintUserAgentModel = '';
+            this.clientHintUserAgentMobile = '';
+            this.clientHintUserAgentPlatform = '';
+            this.clientHintUserAgentPlatformVersion = '';
             this.remoteAddress = '';
             this.referrerURL = '';
             this.cookie = {};
@@ -420,6 +468,7 @@
                     .setDeactivate(prop.getBooleanProperty(Properties.DEACTIVATE, false))
                     .setDebug(prop.getBooleanProperty(Properties.DEBUG, false))
                     .setDomain(prop.getListProperty(Properties.DOMAIN, this.domain))
+                    .setLogLevel(prop.getIntegerProperty(Properties.LOG_LEVEL, this.logLevel))
                     .setUseParamsForDefaultPageName(prop.getListProperty(Properties.USE_PARAMS_FOR_DEFAULT_PAGE_NAME, this.useParamsForDefaultPageName))
                     .setConsumerType(prop.getConsumerTypeProperty(Properties.CONSUMER_TYPE, this.consumerType))
                     .setFilePath(prop.getStringProperty(Properties.FILE_PATH, this.filePath))
@@ -491,7 +540,7 @@
                     }
                 }
                 catch (e) {
-                    this.logger.log(Messages.GENERIC_ERROR, e.name, e.message);
+                    this.logger.error(Messages.GENERIC_ERROR, e.name, e.message);
                 }
             }
             return false;
@@ -545,6 +594,30 @@
             this.userAgent = Config.getOrDefault(Config.decode(ua), this.userAgent);
             return this;
         };
+        Config.prototype.setClientHintUserAgent = function (ch) {
+            this.clientHintUserAgent = Config.getOrDefault(Config.decode(ch), this.clientHintUserAgent);
+            return this;
+        };
+        Config.prototype.setClientHintUserAgentFullVersionList = function (ch) {
+            this.clientHintUserAgentFullVersionList = Config.getOrDefault(Config.decode(ch), this.clientHintUserAgentFullVersionList);
+            return this;
+        };
+        Config.prototype.setClientHintUserAgentModel = function (ch) {
+            this.clientHintUserAgentModel = Config.getOrDefault(Config.decode(ch), this.clientHintUserAgentModel);
+            return this;
+        };
+        Config.prototype.setClientHintUserAgentMobile = function (ch) {
+            this.clientHintUserAgentMobile = Config.getOrDefault(Config.decode(ch), this.clientHintUserAgentMobile);
+            return this;
+        };
+        Config.prototype.setClientHintUserAgentPlatform = function (ch) {
+            this.clientHintUserAgentPlatform = Config.getOrDefault(Config.decode(ch), this.clientHintUserAgentPlatform);
+            return this;
+        };
+        Config.prototype.setClientHintUserAgentPlatformVersion = function (ch) {
+            this.clientHintUserAgentPlatformVersion = Config.getOrDefault(Config.decode(ch), this.clientHintUserAgentPlatformVersion);
+            return this;
+        };
         Config.prototype.setRemoteAddress = function (ra) {
             this.remoteAddress = Config.getOrDefault(Config.decode(ra), this.remoteAddress);
             return this;
@@ -586,6 +659,17 @@
         };
         Config.prototype.setLogger = function (l) {
             this.logger = Config.getOrDefault(l, this.logger);
+            return this;
+        };
+        Config.prototype.setLogLevel = function (ll) {
+            if (typeof ll === 'number') {
+                if (ll >= LogLevel.NONE && ll <= LogLevel.DEBUG) {
+                    this.logLevel = ll;
+                }
+            }
+            else if (typeof ll === 'string') {
+                return this.setLogLevel(LogLevel.getValue(ll));
+            }
             return this;
         };
         Config.prototype.setDebug = function (d) {
@@ -730,6 +814,7 @@
                 deactivate: this.deactivate,
                 deactivateByInAndExclude: this.deactivateByInAndExclude,
                 logger: this.logger,
+                logLevel: this.logLevel,
                 consumer: this.consumer,
                 consumerType: this.consumerType,
                 filePath: this.filePath,
@@ -744,6 +829,12 @@
                 forceSSL: this.forceSSL,
                 useParamsForDefaultPageName: this.useParamsForDefaultPageName,
                 userAgent: this.userAgent,
+                clientHintUserAgent: this.clientHintUserAgent,
+                clientHintUserAgentFullVersionList: this.clientHintUserAgentFullVersionList,
+                clientHintUserAgentModel: this.clientHintUserAgentModel,
+                clientHintUserAgentMobile: this.clientHintUserAgentMobile,
+                clientHintUserAgentPlatform: this.clientHintUserAgentPlatform,
+                clientHintUserAgentPlatformVersion: this.clientHintUserAgentPlatformVersion,
                 remoteAddress: this.remoteAddress,
                 referrerURL: this.referrerURL,
                 requestURL: this.requestURL,
@@ -840,8 +931,9 @@
     }
 
     var DebugLogger = (function () {
-        function DebugLogger(l) {
+        function DebugLogger(l, ll) {
             this.logger = l;
+            this.logLevel = ll;
         }
         DebugLogger.format = function (format) {
             var val = [];
@@ -854,13 +946,26 @@
             }
             return str;
         };
+        DebugLogger.getMessagePrefix = function (ll) {
+            return DebugLogger.format(DebugLogger.MESSAGE_FORMAT, (new Date()).toISOString(), ll, Messages.MAPP_INTELLIGENCE);
+        };
+        DebugLogger.prototype.logMessage = function (prefix) {
+            var msg = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                msg[_i - 1] = arguments[_i];
+            }
+            if (this.logger) {
+                msg[0] = prefix + msg[0];
+                this.log.apply(this, msg);
+            }
+        };
         DebugLogger.prototype.log = function () {
             var msg = [];
             for (var _i = 0; _i < arguments.length; _i++) {
                 msg[_i] = arguments[_i];
             }
             if (this.logger) {
-                var format = Messages.MAPP_INTELLIGENCE + msg.shift();
+                var format = msg.shift();
                 if (msg.length === 0) {
                     this.logger.log(format);
                 }
@@ -869,6 +974,52 @@
                 }
             }
         };
+        DebugLogger.prototype.fatal = function () {
+            var msg = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                msg[_i] = arguments[_i];
+            }
+            if (LogLevel.FATAL <= this.logLevel) {
+                this.logMessage.apply(this, __spreadArray([DebugLogger.getMessagePrefix('FATAL')], msg));
+            }
+        };
+        DebugLogger.prototype.error = function () {
+            var msg = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                msg[_i] = arguments[_i];
+            }
+            if (LogLevel.ERROR <= this.logLevel) {
+                this.logMessage.apply(this, __spreadArray([DebugLogger.getMessagePrefix('ERROR')], msg));
+            }
+        };
+        DebugLogger.prototype.warn = function () {
+            var msg = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                msg[_i] = arguments[_i];
+            }
+            if (LogLevel.WARN <= this.logLevel) {
+                this.logMessage.apply(this, __spreadArray([DebugLogger.getMessagePrefix('WARN')], msg));
+            }
+        };
+        DebugLogger.prototype.info = function () {
+            var msg = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                msg[_i] = arguments[_i];
+            }
+            if (LogLevel.INFO <= this.logLevel) {
+                this.logMessage.apply(this, __spreadArray([DebugLogger.getMessagePrefix('INFO')], msg));
+            }
+        };
+        DebugLogger.prototype.debug = function () {
+            var msg = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                msg[_i] = arguments[_i];
+            }
+            if (LogLevel.DEBUG <= this.logLevel) {
+                this.logMessage.apply(this, __spreadArray([DebugLogger.getMessagePrefix('DEBUG')], msg));
+            }
+        };
+        DebugLogger.MESSAGE_FORMAT = '${0} ${1} [${2}]: ';
         return DebugLogger;
     }());
 
@@ -925,13 +1076,19 @@
             this.domain = config['domain'];
             this.referrerURL = config['referrerURL'];
             this.userAgent = config['userAgent'];
+            this.clientHintUserAgent = config['clientHintUserAgent'];
+            this.clientHintUserAgentFullVersionList = config['clientHintUserAgentFullVersionList'];
+            this.clientHintUserAgentModel = config['clientHintUserAgentModel'];
+            this.clientHintUserAgentMobile = config['clientHintUserAgentMobile'];
+            this.clientHintUserAgentPlatform = config['clientHintUserAgentPlatform'];
+            this.clientHintUserAgentPlatformVersion = config['clientHintUserAgentPlatformVersion'];
             this.remoteAddress = config['remoteAddress'];
             this.requestURL = config['requestURL'];
             this.useParamsForDefaultPageName = config['useParamsForDefaultPageName'];
             this.cookie = config['cookie'];
             this.everId = this.getUserId();
             var l = config['logger'];
-            this.logger = new DebugLogger(l);
+            this.logger = new DebugLogger(l, config['logLevel']);
         }
         Enrichment.decode = function (str) {
             try {
@@ -978,7 +1135,7 @@
                     }
                 }
                 catch (e) {
-                    this.logger.log(Messages.GENERIC_ERROR, e.name, e.message);
+                    this.logger.error(Messages.GENERIC_ERROR, e.name, e.message);
                 }
             }
             return false;
@@ -1055,6 +1212,24 @@
         };
         Enrichment.prototype.getUserAgent = function () {
             return this.userAgent;
+        };
+        Enrichment.prototype.getClientHintUserAgent = function () {
+            return this.clientHintUserAgent;
+        };
+        Enrichment.prototype.getClientHintUserAgentFullVersionList = function () {
+            return this.clientHintUserAgentFullVersionList;
+        };
+        Enrichment.prototype.getClientHintUserAgentModel = function () {
+            return this.clientHintUserAgentModel;
+        };
+        Enrichment.prototype.getClientHintUserAgentMobile = function () {
+            return this.clientHintUserAgentMobile;
+        };
+        Enrichment.prototype.getClientHintUserAgentPlatform = function () {
+            return this.clientHintUserAgentPlatform;
+        };
+        Enrichment.prototype.getClientHintUserAgentPlatformVersion = function () {
+            return this.clientHintUserAgentPlatformVersion;
         };
         Enrichment.prototype.getUserIP = function () {
             return this.remoteAddress;
@@ -1143,7 +1318,7 @@
             this.forceSSL = ((typeof config['forceSSL'] === 'boolean') ? config['forceSSL'] : true);
             this.trackDomain = ((config['trackDomain']) ? config['trackDomain'] : '');
             this.trackId = ((config['trackId']) ? config['trackId'] : '');
-            this.logger = new DebugLogger(config['logger']);
+            this.logger = new DebugLogger(config['logger'], config['logLevel']);
         }
         AConsumer.prototype.getPort = function () {
             var trackDomainSplit = this.trackDomain.split(':');
@@ -1175,7 +1350,7 @@
         AConsumer.prototype.verifyPayload = function (batchContent) {
             var currentBatchSize = batchContent.length;
             if (currentBatchSize > AConsumer.MAX_BATCH_SIZE) {
-                this.logger.log(Messages.TO_LARGE_BATCH_SIZE, AConsumer.MAX_BATCH_SIZE, currentBatchSize);
+                this.logger.error(Messages.TO_LARGE_BATCH_SIZE, AConsumer.MAX_BATCH_SIZE, currentBatchSize);
                 return '';
             }
             var payload = batchContent.join(os.EOL);
@@ -1183,7 +1358,7 @@
                 var length = payload.length;
                 var div = length / AConsumer.INTEGER_1024 / AConsumer.INTEGER_1024 * AConsumer.DOUBLE_100;
                 var currentPayloadSize = Math.round(div) / AConsumer.DOUBLE_100;
-                this.logger.log(Messages.TO_LARGE_PAYLOAD_SIZE, currentPayloadSize);
+                this.logger.error(Messages.TO_LARGE_PAYLOAD_SIZE, currentPayloadSize);
                 return '';
             }
             return payload;
@@ -1214,10 +1389,10 @@
                 var logger = that.logger;
                 var httpOptions = that.getHTTPOptions();
                 var currentBatchSize = batchContent.length;
-                logger.log(Messages.SEND_BATCH_DATA, httpOptions['hostname'], currentBatchSize);
+                logger.debug(Messages.SEND_BATCH_DATA, httpOptions['hostname'], currentBatchSize);
                 var request = that.getHTTPClient(httpOptions, function (response) {
                     var httpStatus = response.statusCode;
-                    logger.log(Messages.BATCH_REQUEST_STATUS, httpStatus);
+                    logger.debug(Messages.BATCH_REQUEST_STATUS, httpStatus);
                     if (httpStatus >= 400) {
                         return resolve(false);
                     }
@@ -1227,7 +1402,7 @@
                     request.destroy();
                 });
                 request.on('error', function (error) {
-                    logger.log(Messages.GENERIC_ERROR, error.name, error.message);
+                    logger.error(Messages.GENERIC_ERROR, error.name, error.message);
                     resolve(false);
                 });
                 request.write(payload);
@@ -1277,13 +1452,13 @@
                             message = Messages.CREATE_NEW_LOG_FILE;
                             return [3, 5];
                         case 5:
-                            this.logger.log(message, this.filePrefix + "-" + this.timestamp + ConsumerFile.TEMPORARY_FILE_EXTENSION, this.filePath);
+                            this.logger.debug(message, this.filePrefix + "-" + this.timestamp + ConsumerFile.TEMPORARY_FILE_EXTENSION, this.filePath);
                             this.fileName = newTempFileName;
                             return [4, fs.promises.open(newTempFilePath, 'a+')];
                         case 6: return [2, _a.sent()];
                         case 7:
                             e_2 = _a.sent();
-                            this.logger.log(Messages.GENERIC_ERROR, e_2.name, e_2.message);
+                            this.logger.error(Messages.GENERIC_ERROR, e_2.name, e_2.message);
                             return [3, 8];
                         case 8: return [2, null];
                     }
@@ -1306,7 +1481,7 @@
                             return [3, 4];
                         case 3:
                             e_3 = _a.sent();
-                            this.logger.log(Messages.GENERIC_ERROR, e_3.name, e_3.message);
+                            this.logger.error(Messages.GENERIC_ERROR, e_3.name, e_3.message);
                             return [3, 4];
                         case 4: return [2, content];
                     }
@@ -1353,12 +1528,12 @@
                         case 6:
                             file = _a.sent();
                             this.timestamp = this.extractTimestamp();
-                            this.logger.log(Messages.USE_EXISTING_LOG_FILE, files[0], this.filePath);
+                            this.logger.debug(Messages.USE_EXISTING_LOG_FILE, files[0], this.filePath);
                             _a.label = 7;
                         case 7: return [3, 9];
                         case 8:
                             e_4 = _a.sent();
-                            this.logger.log(Messages.DIRECTORY_NOT_EXIST, this.filePath);
+                            this.logger.error(Messages.DIRECTORY_NOT_EXIST, this.filePath);
                             return [3, 9];
                         case 9: return [2, file];
                     }
@@ -1393,7 +1568,7 @@
                             return [4, fs.promises.stat(oldFileName)];
                         case 6:
                             _a.sent();
-                            this.logger.log(Messages.CANNOT_RENAME_TEMPORARY_FILE);
+                            this.logger.error(Messages.CANNOT_RENAME_TEMPORARY_FILE);
                             return [4, this.getNewTempFile()];
                         case 7:
                             fileHandle = _a.sent();
@@ -1439,7 +1614,7 @@
                             return [3, 3];
                         case 2:
                             e_7 = _a.sent();
-                            this.logger.log(Messages.GENERIC_ERROR, e_7.name, e_7.message);
+                            this.logger.error(Messages.GENERIC_ERROR, e_7.name, e_7.message);
                             return [3, 3];
                         case 3: return [2];
                     }
@@ -1481,11 +1656,11 @@
                             case 7:
                                 _a.sent();
                                 currentBatchSize = batchContent.length;
-                                that.logger.log(Messages.WRITE_BATCH_DATA, that.fileName, currentBatchSize);
+                                that.logger.debug(Messages.WRITE_BATCH_DATA, that.fileName, currentBatchSize);
                                 return [3, 9];
                             case 8:
                                 e_8 = _a.sent();
-                                that.logger.log(Messages.GENERIC_ERROR, e_8.name, e_8.message);
+                                that.logger.error(Messages.GENERIC_ERROR, e_8.name, e_8.message);
                                 return [3, 9];
                             case 9: return [4, that.close(file)];
                             case 10:
@@ -1518,21 +1693,21 @@
                         }
                         url = that.getUrl();
                         currentBatchSize = batchContent.length;
-                        that.logger.log(Messages.SEND_BATCH_DATA, url, currentBatchSize);
+                        that.logger.debug(Messages.SEND_BATCH_DATA, url, currentBatchSize);
                         command = 'curl -X POST -H "Content-Type: text/plain"';
                         command += " -d \"" + payload + "\"";
                         command += " -m " + ConsumerForkCurl.DEFAULT_CONNECT_TIMEOUT / 1000;
                         command += ' -s -o /dev/null -w "%{http_code}"';
                         command += " \"" + url + "\"";
-                        that.logger.log(Messages.EXECUTE_COMMAND, command);
+                        that.logger.debug(Messages.EXECUTE_COMMAND, command);
                         child_process.exec(command, function (error, stdout, stderr) {
                             if (error) {
-                                that.logger.log(Messages.GENERIC_ERROR, error.name, error.code);
+                                that.logger.error(Messages.GENERIC_ERROR, error.name, error.code);
                             }
                             var httpStatus = parseInt(stdout);
-                            that.logger.log(Messages.BATCH_REQUEST_STATUS, httpStatus);
+                            that.logger.debug(Messages.BATCH_REQUEST_STATUS, httpStatus);
                             if (httpStatus !== 200) {
-                                that.logger.log(Messages.BATCH_RESPONSE_TEXT, httpStatus, stderr);
+                                that.logger.warn(Messages.BATCH_RESPONSE_TEXT, httpStatus, stderr);
                                 return resolve(false);
                             }
                             return resolve(true);
@@ -1578,6 +1753,16 @@
             }
             return queryString.join('&');
         };
+        Queue.addQueryParameterToMap = function (data, key, value) {
+            if (value) {
+                data[key] = value;
+            }
+        };
+        Queue.addNotExistingQueryParameterToMap = function (str, data, key, value) {
+            if (str.indexOf(key) === -1) {
+                Queue.addQueryParameterToMap(data, key, value);
+            }
+        };
         Queue.prototype.sendBatch = function (batchContent) {
             var consumer = this.consumer;
             return new Promise(function (resolve, reject) {
@@ -1604,7 +1789,7 @@
                         case 0:
                             currentQueueSize = this.queue.length;
                             wasRequestSuccessful = true;
-                            this.logger.log(Messages.SENT_BATCH_REQUESTS, currentQueueSize);
+                            this.logger.debug(Messages.SENT_BATCH_REQUESTS, currentQueueSize);
                             _b.label = 1;
                         case 1:
                             if (!(currentQueueSize > 0 && wasRequestSuccessful)) return [3, 3];
@@ -1615,15 +1800,15 @@
                         case 2:
                             wasRequestSuccessful = _b.sent();
                             if (!wasRequestSuccessful) {
-                                this.logger.log(Messages.BATCH_REQUEST_FAILED);
+                                this.logger.warn(Messages.BATCH_REQUEST_FAILED);
                                 (_a = this.queue).splice.apply(_a, __spreadArray([0, 0], batchContent));
                             }
                             currentQueueSize = this.queue.length;
-                            this.logger.log(Messages.CURRENT_QUEUE_STATUS, batchSize, currentQueueSize);
+                            this.logger.debug(Messages.CURRENT_QUEUE_STATUS, batchSize, currentQueueSize);
                             return [3, 1];
                         case 3:
                             if (currentQueueSize === 0) {
-                                this.logger.log(Messages.QUEUE_IS_EMPTY);
+                                this.logger.debug(Messages.QUEUE_IS_EMPTY);
                             }
                             return [2, wasRequestSuccessful];
                     }
@@ -1640,42 +1825,32 @@
             var data = d;
             if (data) {
                 var params = {};
-                var addParam = false;
-                if (data.indexOf(Parameter.USER_AGENT) === -1) {
-                    var ua = this.getUserAgent();
-                    if (ua) {
-                        params[Parameter.USER_AGENT] = ua;
-                        addParam = true;
-                    }
-                }
-                if (data.indexOf(Parameter.USER_IP) === -1) {
-                    var userIP = this.getUserIP();
-                    if (userIP) {
-                        params[Parameter.USER_IP] = userIP;
-                        addParam = true;
-                    }
-                }
-                data += ((addParam) ? '&' + Queue.buildQueryString(params) : '');
+                Queue.addNotExistingQueryParameterToMap(data, params, Parameter.USER_AGENT, this.getUserAgent());
+                Queue.addNotExistingQueryParameterToMap(data, params, Parameter.USER_IP, this.getUserIP());
+                Queue.addNotExistingQueryParameterToMap(data, params, Parameter.CLIENT_HINT_USER_AGENT, this.getClientHintUserAgent());
+                Queue.addNotExistingQueryParameterToMap(data, params, Parameter.CLIENT_HINT_USER_AGENT_FULL_VERSION_LIST, this.getClientHintUserAgentFullVersionList());
+                Queue.addNotExistingQueryParameterToMap(data, params, Parameter.CLIENT_HINT_USER_AGENT_MODEL, this.getClientHintUserAgentModel());
+                Queue.addNotExistingQueryParameterToMap(data, params, Parameter.CLIENT_HINT_USER_AGENT_MOBILE, this.getClientHintUserAgentMobile());
+                Queue.addNotExistingQueryParameterToMap(data, params, Parameter.CLIENT_HINT_USER_AGENT_PLATFORM, this.getClientHintUserAgentPlatform());
+                Queue.addNotExistingQueryParameterToMap(data, params, Parameter.CLIENT_HINT_USER_AGENT_PLATFORM_VERSION, this.getClientHintUserAgentPlatformVersion());
+                data += ((Object.keys(params).length > 0) ? '&' + Queue.buildQueryString(params) : '');
                 this.queue.push(data);
                 return data;
             }
         };
         Queue.prototype.addRequestAsObject = function (data) {
-            var eid = this.getEverId();
-            if (eid) {
-                data[Parameter.EVER_ID] = eid;
-            }
-            var ua = this.getUserAgent();
-            if (ua) {
-                data[Parameter.USER_AGENT] = ua;
-            }
-            var userIP = this.getUserIP();
-            if (userIP) {
-                data[Parameter.USER_IP] = userIP;
-            }
+            Queue.addQueryParameterToMap(data, Parameter.USER_IP, this.getUserIP());
+            Queue.addQueryParameterToMap(data, Parameter.EVER_ID, this.getEverId());
+            Queue.addQueryParameterToMap(data, Parameter.USER_AGENT, this.getUserAgent());
+            Queue.addQueryParameterToMap(data, Parameter.CLIENT_HINT_USER_AGENT, this.getClientHintUserAgent());
+            Queue.addQueryParameterToMap(data, Parameter.CLIENT_HINT_USER_AGENT_FULL_VERSION_LIST, this.getClientHintUserAgentFullVersionList());
+            Queue.addQueryParameterToMap(data, Parameter.CLIENT_HINT_USER_AGENT_MODEL, this.getClientHintUserAgentModel());
+            Queue.addQueryParameterToMap(data, Parameter.CLIENT_HINT_USER_AGENT_MOBILE, this.getClientHintUserAgentMobile());
+            Queue.addQueryParameterToMap(data, Parameter.CLIENT_HINT_USER_AGENT_PLATFORM, this.getClientHintUserAgentPlatform());
+            Queue.addQueryParameterToMap(data, Parameter.CLIENT_HINT_USER_AGENT_PLATFORM_VERSION, this.getClientHintUserAgentPlatformVersion());
             var requestURI = this.getRequestURI();
             if (requestURI) {
-                data[Parameter.PAGE_URL] = 'https://' + requestURI;
+                Queue.addQueryParameterToMap(data, Parameter.PAGE_URL, 'https://' + requestURI);
             }
             var pageName = data[Parameter.PAGE_NAME] ? data[Parameter.PAGE_NAME] : this.getDefaultPageName();
             delete data[Parameter.PAGE_NAME];
@@ -1698,7 +1873,7 @@
                             }
                             if (!request) return [3, 2];
                             currentQueueSize = this.queue.length;
-                            this.logger.log(Messages.ADD_THE_FOLLOWING_REQUEST_TO_QUEUE, currentQueueSize, request);
+                            this.logger.debug(Messages.ADD_THE_FOLLOWING_REQUEST_TO_QUEUE, currentQueueSize, request);
                             if (!(currentQueueSize >= this.maxBatchSize)) return [3, 2];
                             return [4, this.flush()];
                         case 1:
@@ -1737,13 +1912,13 @@
                             return [3, 7];
                         case 6:
                             e_1 = _a.sent();
-                            this.logger.log(Messages.GENERIC_ERROR, e_1.name, e_1.message);
+                            this.logger.error(Messages.GENERIC_ERROR, e_1.name, e_1.message);
                             return [3, 7];
                         case 7: return [3, 2];
                         case 8: return [3, 10];
                         case 9:
                             e_2 = _a.sent();
-                            this.logger.log(Messages.GENERIC_ERROR, e_2.name, e_2.message);
+                            this.logger.error(Messages.GENERIC_ERROR, e_2.name, e_2.message);
                             return [3, 10];
                         case 10: return [2, wasRequestSuccessful];
                     }
@@ -1795,7 +1970,7 @@
             _this.config = config.build();
             _this.queue = new Queue(_this.config);
             var l = _this.config['logger'];
-            _this.logger = new DebugLogger(l);
+            _this.logger = new DebugLogger(l, _this.config['logLevel']);
             _this.deactivate = _this.config['deactivate'];
             _this.deactivateByInAndExclude = _this.config['deactivateByInAndExclude'];
             _this.trackId = _this.config['trackId'];
@@ -1816,12 +1991,12 @@
         };
         ACore.prototype.getUserIdCookie = function (pixelVersion, context) {
             if (!this.trackId || !this.trackDomain) {
-                this.logger.log(Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_COOKIE);
+                this.logger.error(Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_COOKIE);
                 return null;
             }
             return this.queue.getUserIdCookie(pixelVersion, context);
         };
-        ACore.VERSION = '0.0.5';
+        ACore.VERSION = '0.1.0';
         ACore.V4 = 'v4';
         ACore.V5 = 'v5';
         ACore.SMART = 'smart';
@@ -2015,15 +2190,15 @@
         };
         Tracking.prototype.isTrackable = function () {
             if (this.deactivate) {
-                this.logger.log(Messages.TRACKING_IS_DEACTIVATED);
+                this.logger.info(Messages.TRACKING_IS_DEACTIVATED);
                 return false;
             }
             if (!this.trackId || !this.trackDomain) {
-                this.logger.log(Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_TRACKING);
+                this.logger.error(Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_TRACKING);
                 return false;
             }
             if (this.deactivateByInAndExclude) {
-                this.logger.log(Messages.TRACKING_IS_DEACTIVATED_BY_IN_AND_EXCLUDE);
+                this.logger.info(Messages.TRACKING_IS_DEACTIVATED_BY_IN_AND_EXCLUDE);
                 return false;
             }
             return true;
@@ -2293,18 +2468,19 @@
             table.addRow('', 2, Messages.HELP_FOOTER, 16);
             this.printCLI(table.build());
         };
-        CLIOptions.TRACK_ID = "trackId";
-        CLIOptions.TRACK_DOMAIN = "trackDomain";
-        CLIOptions.CONSUMER_TYPE = "consumerType";
-        CLIOptions.CONFIG = "config";
-        CLIOptions.FILE_PATH = "filePath";
-        CLIOptions.FILE_PREFIX = "filePrefix";
-        CLIOptions.DEACTIVATE = "deactivate";
-        CLIOptions.LOGGER = "logger";
-        CLIOptions.HELP = "help";
-        CLIOptions.DEBUG = "debug";
-        CLIOptions.VERSION = "version";
-        CLIOptions.ARG = " <arg>";
+        CLIOptions.TRACK_ID = 'trackId';
+        CLIOptions.TRACK_DOMAIN = 'trackDomain';
+        CLIOptions.CONSUMER_TYPE = 'consumerType';
+        CLIOptions.CONFIG = 'config';
+        CLIOptions.FILE_PATH = 'filePath';
+        CLIOptions.FILE_PREFIX = 'filePrefix';
+        CLIOptions.DEACTIVATE = 'deactivate';
+        CLIOptions.LOGGER = 'logger';
+        CLIOptions.LOG_LEVEL = 'logLevel';
+        CLIOptions.HELP = 'help';
+        CLIOptions.DEBUG = 'debug';
+        CLIOptions.VERSION = 'version';
+        CLIOptions.ARG = ' <arg>';
         return CLIOptions;
     }());
 
@@ -2375,7 +2551,7 @@
                                 })];
                         case 3:
                             e_3 = _a.sent();
-                            return [2, []];
+                            return [2, null];
                         case 4: return [2];
                     }
                 });
@@ -2418,7 +2594,7 @@
                         case 0: return [4, CLIFile.getFiles(filePath, filePrefix, CLIFile.LOG_FILE_EXTENSION)];
                         case 1:
                             files = _a.sent();
-                            if (!files || files.length === 0) {
+                            if (!files) {
                                 msg = Messages.REQUEST_LOG_FILES_NOT_FOUND.replace(/\$\{0}/, filePath);
                                 throw new CLIException(msg);
                             }
@@ -2539,7 +2715,7 @@
                         case 0: return [4, CLIFile.checkTemporaryFiles(this.filePath, this.filePrefix)];
                         case 1:
                             if (_a.sent()) {
-                                this.logger.log(Messages.RENAME_EXPIRED_TEMPORARY_FILE);
+                                this.logger.debug(Messages.RENAME_EXPIRED_TEMPORARY_FILE);
                             }
                             _a.label = 2;
                         case 2:
@@ -2547,10 +2723,14 @@
                             return [4, CLIFile.getLogFiles(this.filePath, this.filePrefix)];
                         case 3:
                             files = _a.sent();
+                            if (files.length <= 0) {
+                                this.logger.info(Messages.REQUEST_LOG_FILES_NOT_FOUND, this.filePath);
+                                return [2, CLIFileRotationTransmitter.EXIT_STATUS_FAIL];
+                            }
                             return [3, 5];
                         case 4:
                             e_1 = _a.sent();
-                            this.logger.log(e_1.message);
+                            this.logger.error(e_1.message);
                             return [2, CLIFileRotationTransmitter.EXIT_STATUS_FAIL];
                         case 5: return [2, this.sendRequests(files)];
                     }
@@ -2581,7 +2761,7 @@
             this.filePrefix = this.mic[CLIOptions.FILE_PREFIX];
             this.deactivate = this.mic[CLIOptions.DEACTIVATE];
             var l = this.mic[CLIOptions.LOGGER];
-            this.logger = new DebugLogger(l);
+            this.logger = new DebugLogger(l, config['logLevel']);
             this.mic[CLIOptions.CONSUMER_TYPE] = ConsumerType.HTTP_CLIENT;
             this.mic[CLIOptions.LOGGER] = this.logger;
             this.mic[CLIOptions.DEACTIVATE] = this.deactivate;
@@ -2595,6 +2775,7 @@
                 .addOption('c', CLIOptions.CONFIG, true, Messages.OPTION_CONFIG)
                 .addOption('f', CLIOptions.FILE_PATH, true, Messages.OPTION_FILE_PATH)
                 .addOption('p', CLIOptions.FILE_PREFIX, true, Messages.OPTION_FILE_PREFIX)
+                .addOption('l', CLIOptions.LOG_LEVEL, true, Messages.OPTION_LOG_LEVEL)
                 .addOption('', CLIOptions.DEACTIVATE, false, Messages.OPTION_DEACTIVATE)
                 .addOption('', CLIOptions.HELP, false, Messages.OPTION_HELP)
                 .addOption('', CLIOptions.DEBUG, false, Messages.OPTION_DEBUG)
@@ -2620,6 +2801,9 @@
                 }
                 if (options.hasOption(CLIOptions.CONFIG)) {
                     mappConfig = new Config(options.getOptionValue(CLIOptions.CONFIG));
+                }
+                if (options.hasOption(CLIOptions.LOG_LEVEL)) {
+                    mappConfig.setLogLevel(options.getOptionValue(CLIOptions.LOG_LEVEL));
                 }
                 if (options.hasOption(CLIOptions.DEBUG)) {
                     mappConfig.setDebug(true);
@@ -2667,7 +2851,7 @@
                 var fileTransmitter;
                 return __generator(this, function (_a) {
                     if (this.deactivate) {
-                        this.logger.log(Messages.TRACKING_IS_DEACTIVATED);
+                        this.logger.info(Messages.TRACKING_IS_DEACTIVATED);
                         return [2, CLICronjob.EXIT_STATUS_SUCCESS];
                     }
                     fileTransmitter = new CLIFileRotationTransmitter(this.mic);
@@ -3310,6 +3494,7 @@
     exports.MappIntelligenceCustomer = Customer;
     exports.MappIntelligenceDataMap = DataMap;
     exports.MappIntelligenceHybrid = Hybrid;
+    exports.MappIntelligenceLogLevel = LogLevel;
     exports.MappIntelligenceOrder = Order;
     exports.MappIntelligencePage = Page;
     exports.MappIntelligenceParameter = Parameter;

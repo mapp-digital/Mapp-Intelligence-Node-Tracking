@@ -64,7 +64,7 @@ export abstract class AConsumer implements IConsumer {
         this.trackDomain = ((config['trackDomain']) ? config['trackDomain'] : '');
         this.trackId = ((config['trackId']) ? config['trackId'] : '');
 
-        this.logger = new DebugLogger(config['logger']);
+        this.logger = new DebugLogger(config['logger'], config['logLevel']);
     }
 
     /**
@@ -120,7 +120,7 @@ export abstract class AConsumer implements IConsumer {
     protected verifyPayload(batchContent: Array<string>): string {
         const currentBatchSize: number = batchContent.length;
         if (currentBatchSize > AConsumer.MAX_BATCH_SIZE) {
-            this.logger.log(Messages.TO_LARGE_BATCH_SIZE, AConsumer.MAX_BATCH_SIZE, currentBatchSize);
+            this.logger.error(Messages.TO_LARGE_BATCH_SIZE, AConsumer.MAX_BATCH_SIZE, currentBatchSize);
             return '';
         }
 
@@ -129,7 +129,7 @@ export abstract class AConsumer implements IConsumer {
             const length: number = payload.length;
             const div = length / AConsumer.INTEGER_1024 / AConsumer.INTEGER_1024 * AConsumer.DOUBLE_100;
             const currentPayloadSize: number = Math.round(div) / AConsumer.DOUBLE_100;
-            this.logger.log(Messages.TO_LARGE_PAYLOAD_SIZE, currentPayloadSize);
+            this.logger.error(Messages.TO_LARGE_PAYLOAD_SIZE, currentPayloadSize);
             return '';
         }
 

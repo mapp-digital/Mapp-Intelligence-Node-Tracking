@@ -33,6 +33,7 @@ export declare class Messages {
     static readonly OPTION_DEACTIVATE: string;
     static readonly OPTION_HELP: string;
     static readonly OPTION_DEBUG: string;
+    static readonly OPTION_LOG_LEVEL: string;
     static readonly OPTION_VERSION: string;
     static readonly REQUEST_LOG_FILES_NOT_FOUND: string;
     static readonly RENAME_EXPIRED_TEMPORARY_FILE: string;

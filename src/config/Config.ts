@@ -1,11 +1,13 @@
 import {tmpdir} from 'os';
 import {ILogger} from '../ILogger';
+import {LogLevel} from '../LogLevel';
 import {IConsumer} from '../IConsumer';
 import {ConsumerType} from '../consumer/ConsumerType';
 import {ConfigProperties} from './ConfigProperties';
 import {Properties} from './Properties';
 import {DefaultLogger} from './DefaultLogger';
 import {Messages} from '../Messages';
+import {DebugLogger} from '../DebugLogger';
 
 export class Config {
     /**
@@ -72,7 +74,11 @@ export class Config {
     /**
      * Activates the debug mode.
      */
-    private logger: ILogger;
+    private logger: DebugLogger;
+    /**
+     * Defined the debug log level.
+     */
+    private logLevel: number = LogLevel.ERROR;
     /**
      * The consumer to use for data transfer to Intelligence.
      */
@@ -130,6 +136,30 @@ export class Config {
      */
     private userAgent: string = '';
     /**
+     * HTTP header for Sec-CH-UA
+     */
+    private clientHintUserAgent: string = '';
+    /**
+     * HTTP header for Sec-CH-UA-Full-Version-List
+     */
+    private clientHintUserAgentFullVersionList: string = '';
+    /**
+     * HTTP header for Sec-CH-UA-Model
+     */
+    private clientHintUserAgentModel: string = '';
+    /**
+     * HTTP header for Sec-CH-UA-Mobile
+     */
+    private clientHintUserAgentMobile: string = '';
+    /**
+     * HTTP header for Sec-CH-UA-Platform
+     */
+    private clientHintUserAgentPlatform: string = '';
+    /**
+     * HTTP header for Sec-CH-UA-Platform-Version
+     */
+    private clientHintUserAgentPlatformVersion: string = '';
+    /**
      * Remote address (ip) from the client.
      */
     private remoteAddress: string = '';
@@ -180,6 +210,7 @@ export class Config {
                 .setDeactivate(prop.getBooleanProperty(Properties.DEACTIVATE, false))
                 .setDebug(prop.getBooleanProperty(Properties.DEBUG, false))
                 .setDomain(prop.getListProperty(Properties.DOMAIN, this.domain))
+                .setLogLevel(prop.getIntegerProperty(Properties.LOG_LEVEL, this.logLevel))
                 .setUseParamsForDefaultPageName(prop.getListProperty(
                     Properties.USE_PARAMS_FOR_DEFAULT_PAGE_NAME,
                     this.useParamsForDefaultPageName
@@ -280,7 +311,7 @@ export class Config {
                 }
             } catch (e) {
                 /* istanbul ignore next */
-                this.logger.log(Messages.GENERIC_ERROR, e.name, e.message);
+                this.logger.error(Messages.GENERIC_ERROR, e.name, e.message);
             }
         }
 
@@ -320,11 +351,6 @@ export class Config {
 
         return !isIncluded;
     }
-
-
-
-
-
 
     /**
      * @param str String to decoding
@@ -378,6 +404,66 @@ export class Config {
      */
     public setUserAgent(ua: string): Config {
         this.userAgent = Config.getOrDefault(Config.decode(ua), this.userAgent);
+        return this;
+    }
+
+    /**
+     * @param ch HTTP Header for Sec-CH-UA
+     *
+     * @return MappIntelligenceConfig
+     */
+    public  setClientHintUserAgent(ch: string): Config {
+        this.clientHintUserAgent = Config.getOrDefault(Config.decode(ch), this.clientHintUserAgent);
+        return this;
+    }
+
+    /**
+     * @param ch HTTP Header for Sec-CH-UA-Full-Version-List
+     *
+     * @return MappIntelligenceConfig
+     */
+    public setClientHintUserAgentFullVersionList(ch: string): Config {
+        this.clientHintUserAgentFullVersionList = Config.getOrDefault(Config.decode(ch), this.clientHintUserAgentFullVersionList);
+        return this;
+    }
+
+    /**
+     * @param ch HTTP Header for Sec-CH-UA-Model
+     *
+     * @return MappIntelligenceConfig
+     */
+    public setClientHintUserAgentModel(ch: string): Config {
+        this.clientHintUserAgentModel = Config.getOrDefault(Config.decode(ch), this.clientHintUserAgentModel);
+        return this;
+    }
+
+    /**
+     * @param ch HTTP Header for Sec-CH-UA-Mobile
+     *
+     * @return MappIntelligenceConfig
+     */
+    public setClientHintUserAgentMobile(ch: string): Config {
+        this.clientHintUserAgentMobile = Config.getOrDefault(Config.decode(ch), this.clientHintUserAgentMobile);
+        return this;
+    }
+
+    /**
+     * @param ch HTTP Header for Sec-CH-UA-Platform
+     *
+     * @return MappIntelligenceConfig
+     */
+    public setClientHintUserAgentPlatform(ch: string): Config {
+        this.clientHintUserAgentPlatform = Config.getOrDefault(Config.decode(ch), this.clientHintUserAgentPlatform);
+        return this;
+    }
+
+    /**
+     * @param ch HTTP Header for Sec-CH-UA-Platform-Version
+     *
+     * @return MappIntelligenceConfig
+     */
+    public setClientHintUserAgentPlatformVersion(ch: string): Config {
+        this.clientHintUserAgentPlatformVersion = Config.getOrDefault(Config.decode(ch), this.clientHintUserAgentPlatformVersion);
         return this;
     }
 
@@ -473,6 +559,24 @@ export class Config {
      */
     public setLogger(l: ILogger): Config {
         this.logger = Config.getOrDefault(l, this.logger);
+        return this;
+    }
+
+    /**
+     * @param ll Specify the debug log level
+     *
+     * @return Config
+     */
+    public setLogLevel(ll: number | string): Config {
+        if (typeof ll === 'number') {
+            if (ll >= LogLevel.NONE && ll <= LogLevel.DEBUG) {
+                this.logLevel = ll;
+            }
+        }
+        else if (typeof ll === 'string') {
+            return this.setLogLevel(LogLevel.getValue(ll));
+        }
+
         return this;
     }
 
@@ -777,6 +881,7 @@ export class Config {
             deactivate: this.deactivate,
             deactivateByInAndExclude: this.deactivateByInAndExclude,
             logger: this.logger,
+            logLevel: this.logLevel,
             consumer: this.consumer,
             consumerType: this.consumerType,
             filePath: this.filePath,
@@ -791,6 +896,12 @@ export class Config {
             forceSSL: this.forceSSL,
             useParamsForDefaultPageName: this.useParamsForDefaultPageName,
             userAgent: this.userAgent,
+            clientHintUserAgent: this.clientHintUserAgent,
+            clientHintUserAgentFullVersionList: this.clientHintUserAgentFullVersionList,
+            clientHintUserAgentModel: this.clientHintUserAgentModel,
+            clientHintUserAgentMobile: this.clientHintUserAgentMobile,
+            clientHintUserAgentPlatform: this.clientHintUserAgentPlatform,
+            clientHintUserAgentPlatformVersion: this.clientHintUserAgentPlatformVersion,
             remoteAddress: this.remoteAddress,
             referrerURL: this.referrerURL,
             requestURL: this.requestURL,

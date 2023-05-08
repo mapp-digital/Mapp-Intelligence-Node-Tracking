@@ -6,6 +6,7 @@ module.exports = {
         trackDomain: '',
         deactivate: false,
         debug: false,
+        logLevel: '',
         domain: [],
         useParamsForDefaultPageName: [],
         containsInclude: [],

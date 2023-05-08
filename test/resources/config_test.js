@@ -1,4 +1,4 @@
-import {MappIntelligenceConsumerType} from '../../src/MappIntelligence';
+import {MappIntelligenceConsumerType, MappIntelligenceLogLevel} from '../../src/MappIntelligence';
 
 module.exports = {
     tracking: {
@@ -6,6 +6,7 @@ module.exports = {
         trackDomain: 'analytics01.wt-eu02.net',
         deactivate: false,
         debug: false,
+        logLevel: MappIntelligenceLogLevel.DEBUG,
         domain: ['sub.domain.tld', 'foo.bar', /test\.test\.com/],
         useParamsForDefaultPageName: ['aa', 'bb', 'cc', null, 8],
         containsInclude: ["foo", null, 8, "bar"],

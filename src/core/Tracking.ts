@@ -112,17 +112,17 @@ export class Tracking extends ACore {
      */
     private isTrackable(): boolean {
         if (this.deactivate) {
-            this.logger.log(Messages.TRACKING_IS_DEACTIVATED);
+            this.logger.info(Messages.TRACKING_IS_DEACTIVATED);
             return false;
         }
 
         if (!this.trackId || !this.trackDomain) {
-            this.logger.log(Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_TRACKING);
+            this.logger.error(Messages.REQUIRED_TRACK_ID_AND_DOMAIN_FOR_TRACKING);
             return false;
         }
 
         if (this.deactivateByInAndExclude) {
-            this.logger.log(Messages.TRACKING_IS_DEACTIVATED_BY_IN_AND_EXCLUDE);
+            this.logger.info(Messages.TRACKING_IS_DEACTIVATED_BY_IN_AND_EXCLUDE);
             return false;
         }
 

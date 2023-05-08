@@ -3,6 +3,7 @@ export class Properties {
     public static readonly TRACK_DOMAIN: string = 'tracking.trackDomain';
     public static readonly DEACTIVATE: string = 'tracking.deactivate';
     public static readonly DEBUG: string = 'tracking.debug';
+    public static readonly LOG_LEVEL: string = 'tracking.logLevel';
     public static readonly DOMAIN: string = 'tracking.domain';
     public static readonly USE_PARAMS_FOR_DEFAULT_PAGE_NAME: string = 'tracking.useParamsForDefaultPageName';
     public static readonly CONTAINS_INCLUDE: string = 'tracking.containsInclude';

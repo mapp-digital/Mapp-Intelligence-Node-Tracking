@@ -3,6 +3,7 @@ import {
     IMappIntelligenceCookie,
     MappIntelligenceTracking,
     MappIntelligenceConfig,
+    MappIntelligenceLogLevel,
     MappIntelligenceParameterMap,
     MappIntelligenceDataMap,
     MappIntelligenceProductCollection,
@@ -36,7 +37,8 @@ describe('MappIntelligenceTracking', () => {
 
     it('trackId and trackDomain are required', async () => {
         const mic = (new MappIntelligenceConfig())
-            .setDebug(true);
+            .setDebug(true)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const mit = new MappIntelligenceTracking(mic);
 
@@ -47,7 +49,8 @@ describe('MappIntelligenceTracking', () => {
     it('trackId is required', async () => {
         const mic = (new MappIntelligenceConfig())
             .setTrackDomain('analytics01.wt-eu02.net')
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const mit = new MappIntelligenceTracking(mic);
 
@@ -59,7 +62,8 @@ describe('MappIntelligenceTracking', () => {
     it('trackDomain is required', async () => {
         const mic = (new MappIntelligenceConfig())
             .setTrackId('111111111111111')
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
 
         const mit = new MappIntelligenceTracking(mic);
 
@@ -97,6 +101,7 @@ describe('MappIntelligenceTracking', () => {
     it('tracking is deactivated', async () => {
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .setDeactivate(true);
 
         const mit = new MappIntelligenceTracking(mic);
@@ -109,6 +114,7 @@ describe('MappIntelligenceTracking', () => {
     it('tracking is deactivated by include / exclude', async () => {
         const mic = (new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net'))
             .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG)
             .addMatchesInclude(/sub\.domain1\.tld/)
             .addMatchesExclude(/sub\.domain1\.tld/)
             .setRequestURL('https://sub.domain.tld:80/path/to/page.html?foo=bar&test=123#abc');
@@ -314,7 +320,8 @@ describe('MappIntelligenceTracking', () => {
 
     it('set userId failed - 1', async () => {
         const mic = (new MappIntelligenceConfig())
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const mit = new MappIntelligenceTracking(mic);
 
         expect(mit.getUserIdCookie(MappIntelligenceTracking.SMART, MappIntelligenceTracking.CLIENT_SIDE_COOKIE)).toBeNull();
@@ -324,7 +331,8 @@ describe('MappIntelligenceTracking', () => {
     it('set userId failed - 2', async () => {
         const mic = (new MappIntelligenceConfig())
             .setTrackId('111111111111111')
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const mit = new MappIntelligenceTracking(mic);
 
         expect(mit.getUserIdCookie(MappIntelligenceTracking.SMART, MappIntelligenceTracking.CLIENT_SIDE_COOKIE)).toBeNull();
@@ -334,7 +342,8 @@ describe('MappIntelligenceTracking', () => {
     it('set userId failed - 3', async () => {
         const mic = (new MappIntelligenceConfig())
             .setTrackDomain('analytics01.wt-eu02.net')
-            .setLogger(customLogger);
+            .setLogger(customLogger)
+            .setLogLevel(MappIntelligenceLogLevel.DEBUG);
         const mit = new MappIntelligenceTracking(mic);
 
         expect(mit.getUserIdCookie(MappIntelligenceTracking.SMART, MappIntelligenceTracking.CLIENT_SIDE_COOKIE)).toBeNull();

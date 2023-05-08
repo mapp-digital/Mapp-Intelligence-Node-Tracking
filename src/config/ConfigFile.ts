@@ -6,7 +6,7 @@
  */
 function addProperties(that: any, data: any, properties: Array<string>, type: string): void {
     for (let prop of properties) {
-        if (typeof data[prop] === type) {
+        if (!that[prop] && typeof data[prop] === type) {
             that[prop] = data[prop];
         }
     }
@@ -27,7 +27,8 @@ function addArrayProperties(that: any, data: any, properties: Array<string>, fil
 }
 
 class Tracking {
-    private static readonly STRING_PROPERTIES: Array<string> = ['trackId', 'trackDomain'];
+    private static readonly STRING_PROPERTIES: Array<string> = ['trackId', 'trackDomain', 'logLevel'];
+    private static readonly NUMBER_PROPERTIES: Array<string> = ['logLevel'];
     private static readonly BOOLEAN_PROPERTIES: Array<string> = ['deactivate', 'debug'];
     private static readonly ARRAY_STRING_PROPERTIES: Array<string> = [
         'useParamsForDefaultPageName', 'containsInclude', 'containsExclude'
@@ -38,6 +39,7 @@ class Tracking {
 
     private readonly trackId: string = "";
     private readonly trackDomain: string = "";
+    private readonly logLevel: string = "";
     private readonly deactivate: boolean = false;
     private readonly debug: boolean = false;
     private readonly domain: Array<string | RegExp> = [];
@@ -54,6 +56,7 @@ class Tracking {
      */
     public constructor(data: any) {
         addProperties(this, data, Tracking.STRING_PROPERTIES, 'string');
+        addProperties(this, data, Tracking.NUMBER_PROPERTIES, 'number');
         addProperties(this, data, Tracking.BOOLEAN_PROPERTIES, 'boolean');
 
         addArrayProperties(this, data, Tracking.ARRAY_STRING_PROPERTIES, (value: any) => {
@@ -95,6 +98,7 @@ class Tracking {
         return {
             trackId: this.trackId,
             trackDomain: this.trackDomain,
+            logLevel: this.logLevel,
             deactivate: this.deactivate,
             debug: this.debug,
             domain: this.domain,

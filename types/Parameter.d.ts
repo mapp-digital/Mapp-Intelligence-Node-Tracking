@@ -1,6 +1,12 @@
 export declare class Parameter {
     static readonly USER_AGENT: string;
     static readonly USER_IP: string;
+    static readonly CLIENT_HINT_USER_AGENT: string;
+    static readonly CLIENT_HINT_USER_AGENT_FULL_VERSION_LIST: string;
+    static readonly CLIENT_HINT_USER_AGENT_MODEL: string;
+    static readonly CLIENT_HINT_USER_AGENT_MOBILE: string;
+    static readonly CLIENT_HINT_USER_AGENT_PLATFORM: string;
+    static readonly CLIENT_HINT_USER_AGENT_PLATFORM_VERSION: string;
     static readonly EVER_ID: string;
     static readonly CUSTOM_EVER_ID: string;
     static readonly PAGE_URL: string;

@@ -8,6 +8,12 @@ export declare class Enrichment {
     private readonly domain;
     private readonly referrerURL;
     private readonly userAgent;
+    private readonly clientHintUserAgent;
+    private readonly clientHintUserAgentFullVersionList;
+    private readonly clientHintUserAgentModel;
+    private readonly clientHintUserAgentMobile;
+    private readonly clientHintUserAgentPlatform;
+    private readonly clientHintUserAgentPlatformVersion;
     private readonly remoteAddress;
     private readonly requestURL;
     private readonly useParamsForDefaultPageName;
@@ -30,6 +36,12 @@ export declare class Enrichment {
     private setUserIdCookie;
     private isOwnTrackDomain;
     protected getUserAgent(): string;
+    protected getClientHintUserAgent(): string;
+    protected getClientHintUserAgentFullVersionList(): string;
+    protected getClientHintUserAgentModel(): string;
+    protected getClientHintUserAgentMobile(): string;
+    protected getClientHintUserAgentPlatform(): string;
+    protected getClientHintUserAgentPlatformVersion(): string;
     protected getUserIP(): string;
     protected getRequestURI(): string;
     protected getQueryMap(): {

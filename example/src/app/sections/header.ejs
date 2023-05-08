@@ -1,8 +1,13 @@
 <meta charset="utf-8">
 <title>E-commerce Shop</title>
-<base href="http://<%= shop.host %>:<%= shop.port %>/">
+<base href="<%= shop.protocol %>://<%= shop.host %><%= shop.port %>/">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="">
+
+<!--
+<meta http-equiv="Accept-CH" content="Sec-CH-UA, Sec-CH-UA-Full-Version-List, Sec-CH-UA-Model, Sec-CH-UA-Mobile, Sec-CH-UA-Platform, Sec-CH-UA-Platform-Version">
+<meta http-equiv="Delegate-CH" content="Sec-CH-UA https://track.customer.com; Sec-CH-UA-Full-Version-List https://track.customer.com; Sec-CH-UA-Model https://track.customer.com; Sec-CH-UA-Mobile https://track.customer.com; Sec-CH-UA-Platform https://track.customer.com; Sec-CH-UA-Platform-Version https://track.customer.com;">
+-->
 
 <!-- bootstrap -->
 <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -20,7 +25,6 @@
 <script src="assets/themes/js/jquery.scrolltotop.js"></script>
 
 <!-- tracking -->
-<!--
 <script src="assets/themes/js/js/smart-pixel.min.js"></script>
 <script>
     window.wtSmart = window.wtSmart || [];
@@ -35,7 +39,7 @@
         wtSmart.advanced.set({
             sendViaServer: {
                 activated: true,
-                serverDomain: '127.0.0.1:9091',
+                serverDomain: 'track.customer.com',
                 serverPath: 'img/tracking',
                 droppedRequests: 0
             }
@@ -45,4 +49,3 @@
         wtSmart.track();
     });
 </script>
--->

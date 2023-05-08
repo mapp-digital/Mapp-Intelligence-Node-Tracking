@@ -1,26 +1,27 @@
-import {EOL} from "os";
+import {EOL} from 'os';
 
-import {CLIArguments} from "./CLIArguments";
-import {CLIException} from "./CLIException";
-import {CLITable} from "./CLITable";
+import {CLIArguments} from './CLIArguments';
+import {CLIException} from './CLIException';
+import {CLITable} from './CLITable';
 
-import {Messages} from "../Messages";
-import {DefaultLogger} from "../config/DefaultLogger";
+import {Messages} from '../Messages';
+import {DefaultLogger} from '../config/DefaultLogger';
 
 export class CLIOptions {
-    public static readonly TRACK_ID: string = "trackId";
-    public static readonly TRACK_DOMAIN: string = "trackDomain";
-    public static readonly CONSUMER_TYPE: string = "consumerType";
-    public static readonly CONFIG: string = "config";
-    public static readonly FILE_PATH: string = "filePath";
-    public static readonly FILE_PREFIX: string = "filePrefix";
-    public static readonly DEACTIVATE: string = "deactivate";
-    public static readonly LOGGER: string = "logger";
-    public static readonly HELP: string = "help";
-    public static readonly DEBUG: string = "debug";
-    public static readonly VERSION: string = "version";
+    public static readonly TRACK_ID: string = 'trackId';
+    public static readonly TRACK_DOMAIN: string = 'trackDomain';
+    public static readonly CONSUMER_TYPE: string = 'consumerType';
+    public static readonly CONFIG: string = 'config';
+    public static readonly FILE_PATH: string = 'filePath';
+    public static readonly FILE_PREFIX: string = 'filePrefix';
+    public static readonly DEACTIVATE: string = 'deactivate';
+    public static readonly LOGGER: string = 'logger';
+    public static readonly LOG_LEVEL: string = 'logLevel';
+    public static readonly HELP: string = 'help';
+    public static readonly DEBUG: string = 'debug';
+    public static readonly VERSION: string = 'version';
 
-    private static readonly ARG: string = " <arg>";
+    private static readonly ARG: string = ' <arg>';
 
     private readonly args: {[key: string]: string};
     private readonly options: {

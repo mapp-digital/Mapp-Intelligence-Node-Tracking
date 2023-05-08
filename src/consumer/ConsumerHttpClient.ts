@@ -25,11 +25,11 @@ export class ConsumerHttpClient extends AConsumer {
             const logger: DebugLogger = that.logger;
             const httpOptions: {[key: string]: any} = that.getHTTPOptions();
             const currentBatchSize: number = batchContent.length;
-            logger.log(Messages.SEND_BATCH_DATA, httpOptions['hostname'], currentBatchSize);
+            logger.debug(Messages.SEND_BATCH_DATA, httpOptions['hostname'], currentBatchSize);
 
             const request = that.getHTTPClient(httpOptions, function(response) {
                 const httpStatus: number = response.statusCode;
-                logger.log(Messages.BATCH_REQUEST_STATUS, httpStatus);
+                logger.debug(Messages.BATCH_REQUEST_STATUS, httpStatus);
 
                 if (httpStatus >= 400) {
                     return resolve(false);
@@ -43,7 +43,7 @@ export class ConsumerHttpClient extends AConsumer {
             });
 
             request.on('error', function(error) {
-                logger.log(Messages.GENERIC_ERROR, error.name, error.message);
+                logger.error(Messages.GENERIC_ERROR, error.name, error.message);
                 resolve(false);
             });
 

@@ -4,6 +4,7 @@
         "trackDomain": "",
         "deactivate": false,
         "debug": false,
+        "logLevel": "",
         "domain": [],
         "useParamsForDefaultPageName": [],
         "containsInclude": [],
