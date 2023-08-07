@@ -9,6 +9,8 @@ export declare class Parameter {
     static readonly CLIENT_HINT_USER_AGENT_PLATFORM_VERSION: string;
     static readonly EVER_ID: string;
     static readonly CUSTOM_EVER_ID: string;
+    static readonly TEMPORARY_SESSION_ID: string;
+    static readonly TEMPORARY_SESSION_ID_TYPE: string;
     static readonly PAGE_URL: string;
     static readonly ACTION_NAME: string;
     static readonly CAMPAIGN_ID: string;

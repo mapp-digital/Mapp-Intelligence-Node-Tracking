@@ -220,7 +220,7 @@ describe('MappIntelligenceQueue', () => {
         expect(requests[0]).toContain("&X-WT-SEC-CH-UA-MODEL=" + clientHintUserAgentModel);
         expect(requests[0]).toContain("&X-WT-SEC-CH-UA-MOBILE=" + clientHintUserAgentMobile);
         expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM=" + clientHintUserAgentPlatform);
-        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM_VERSION=" + clientHintUserAgentPlatformVersion);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM-VERSION=" + clientHintUserAgentPlatformVersion);
     });
 
     it('with client hints 2', async () => {
@@ -252,7 +252,7 @@ describe('MappIntelligenceQueue', () => {
         expect(requests[0]).toContain("&X-WT-SEC-CH-UA-MODEL=" + clientHintUserAgentModel);
         expect(requests[0]).toContain("&X-WT-SEC-CH-UA-MOBILE=" + clientHintUserAgentMobile);
         expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM=" + clientHintUserAgentPlatform);
-        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM_VERSION=" + clientHintUserAgentPlatformVersion);
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM-VERSION=" + clientHintUserAgentPlatformVersion);
     });
 
     it('with client hints 3', async () => {
@@ -281,7 +281,7 @@ describe('MappIntelligenceQueue', () => {
             + '&X-WT-SEC-CH-UA-MODEL=sec-ch-ua-model'
             + '&X-WT-SEC-CH-UA-MOBILE=sec-ch-ua-mobile'
             + '&X-WT-SEC-CH-UA-PLATFORM=sec-ch-ua-platform'
-            + '&X-WT-SEC-CH-UA-PLATFORM_VERSION=sec-ch-ua-platform-version'
+            + '&X-WT-SEC-CH-UA-PLATFORM-VERSION=sec-ch-ua-platform-version'
         );
 
         const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(queue);
@@ -292,7 +292,7 @@ describe('MappIntelligenceQueue', () => {
         expect(requests[0]).toContain("&X-WT-SEC-CH-UA-MODEL=sec-ch-ua-model");
         expect(requests[0]).toContain("&X-WT-SEC-CH-UA-MOBILE=sec-ch-ua-mobile");
         expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM=sec-ch-ua-platform");
-        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM_VERSION=sec-ch-ua-platform-version");
+        expect(requests[0]).toContain("&X-WT-SEC-CH-UA-PLATFORM-VERSION=sec-ch-ua-platform-version");
     });
 
     it('with remote addr - 1', async () => {

@@ -318,6 +318,131 @@ describe('MappIntelligenceTracking', () => {
         expect(MappIntelligenceUnitUtil.checkStatistics(requests[0], '34')).toBeTruthy();
     });
 
+    it('without temporary session ID', async () => {
+        const mic = new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net');
+        const mit = new MappIntelligenceTracking(mic);
+
+        const page = (new MappIntelligencePage("en.page.test"))
+            .setCategory(1, "page.test")
+            .setCategory(2, "en")
+            .setCategory(3, "page")
+            .setCategory(4, "test");
+
+        const session = (new MappIntelligenceSession())
+            .setParameter(1, "1");
+
+        const customer = (new MappIntelligenceCustomer("24"))
+            .setFirstName("John")
+            .setLastName("Doe")
+            .setCustomIdentifier("foo")
+            .setEmail("john@doe.com");
+
+        const product1 = (new MappIntelligenceProduct("065ee2b001"))
+            .setCost(59.99)
+            .setQuantity(1)
+            .setStatus(MappIntelligenceProduct.CONFIRMATION);
+
+        const product2 = (new MappIntelligenceProduct("085eo2f009"))
+            .setCost(49.99)
+            .setQuantity(5)
+            .setStatus(MappIntelligenceProduct.CONFIRMATION);
+
+        const product3 = (new MappIntelligenceProduct("995ee1k906"))
+            .setCost(15.99)
+            .setQuantity(1)
+            .setStatus(MappIntelligenceProduct.CONFIRMATION);
+
+        const product4 = (new MappIntelligenceProduct("abc"))
+            .setCost(0)
+            .setQuantity(0)
+            .setSoldOut(true)
+            .setVariant('false')
+            .setStatus(MappIntelligenceProduct.CONFIRMATION);
+
+        expect(await mit.track((new MappIntelligenceDataMap())
+            .action(new MappIntelligenceAction("webtrekk_ignore"))
+            .page(page)
+            .campaign(new MappIntelligenceCampaign("wt_mc%3Dfoo.bar"))
+            .order(new MappIntelligenceOrder(360.93))
+            .session(session)
+            .customer(customer)
+            .product((new MappIntelligenceProductCollection())
+                .add(product1).add(product2).add(product3).add(product4)
+            )
+        )).toBeTruthy();
+
+        const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(mit);
+        expect(requests.length).toBe(1);
+
+        const request: string = requests[0];
+        expect(request).toMatch(/^wt\?p=600,en\.page\.test,,,,,[0-9]{13},0,,&.*/);
+        expect(request).not.toMatch(/.*&fpv=.*/);
+        expect(request).not.toMatch(/.*&fpt=.*/);
+    });
+
+    it('with temporary session ID', async () => {
+        const mic = new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net');
+        const mit = new MappIntelligenceTracking(mic);
+
+        const page = (new MappIntelligencePage("en.page.test"))
+            .setCategory(1, "page.test")
+            .setCategory(2, "en")
+            .setCategory(3, "page")
+            .setCategory(4, "test");
+
+        const session = (new MappIntelligenceSession())
+            .setParameter(1, "1")
+            .setTemporarySessionId('abc123def456');
+
+        const customer = (new MappIntelligenceCustomer("24"))
+            .setFirstName("John")
+            .setLastName("Doe")
+            .setCustomIdentifier("foo")
+            .setEmail("john@doe.com");
+
+        const product1 = (new MappIntelligenceProduct("065ee2b001"))
+            .setCost(59.99)
+            .setQuantity(1)
+            .setStatus(MappIntelligenceProduct.CONFIRMATION);
+
+        const product2 = (new MappIntelligenceProduct("085eo2f009"))
+            .setCost(49.99)
+            .setQuantity(5)
+            .setStatus(MappIntelligenceProduct.CONFIRMATION);
+
+        const product3 = (new MappIntelligenceProduct("995ee1k906"))
+            .setCost(15.99)
+            .setQuantity(1)
+            .setStatus(MappIntelligenceProduct.CONFIRMATION);
+
+        const product4 = (new MappIntelligenceProduct("abc"))
+            .setCost(0)
+            .setQuantity(0)
+            .setSoldOut(true)
+            .setVariant('false')
+            .setStatus(MappIntelligenceProduct.CONFIRMATION);
+
+        expect(await mit.track((new MappIntelligenceDataMap())
+            .action(new MappIntelligenceAction("webtrekk_ignore"))
+            .page(page)
+            .campaign(new MappIntelligenceCampaign("wt_mc%3Dfoo.bar"))
+            .order(new MappIntelligenceOrder(360.93))
+            .session(session)
+            .customer(customer)
+            .product((new MappIntelligenceProductCollection())
+                .add(product1).add(product2).add(product3).add(product4)
+            )
+        )).toBeTruthy();
+
+        const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(mit);
+        expect(requests.length).toBe(1);
+
+        const request: string = requests[0];
+        expect(request).toMatch(/^wt\?p=600,en\.page\.test,,,,,[0-9]{13},0,,&.*/);
+        expect(request).toMatch(/.*&fpv=abc123def456.*/);
+        expect(request).toMatch(/.*&fpt=2\.0\.0.*/);
+    });
+
     it('set userId failed - 1', async () => {
         const mic = (new MappIntelligenceConfig())
             .setLogger(customLogger)

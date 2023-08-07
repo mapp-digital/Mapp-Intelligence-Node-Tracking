@@ -74,9 +74,11 @@
         Parameter.CLIENT_HINT_USER_AGENT_MODEL = "X-WT-SEC-CH-UA-MODEL";
         Parameter.CLIENT_HINT_USER_AGENT_MOBILE = "X-WT-SEC-CH-UA-MOBILE";
         Parameter.CLIENT_HINT_USER_AGENT_PLATFORM = "X-WT-SEC-CH-UA-PLATFORM";
-        Parameter.CLIENT_HINT_USER_AGENT_PLATFORM_VERSION = "X-WT-SEC-CH-UA-PLATFORM_VERSION";
+        Parameter.CLIENT_HINT_USER_AGENT_PLATFORM_VERSION = "X-WT-SEC-CH-UA-PLATFORM-VERSION";
         Parameter.EVER_ID = 'eid';
         Parameter.CUSTOM_EVER_ID = 'ceid';
+        Parameter.TEMPORARY_SESSION_ID = 'fpv';
+        Parameter.TEMPORARY_SESSION_ID_TYPE = 'fpt';
         Parameter.PAGE_URL = 'pu';
         Parameter.ACTION_NAME = 'ct';
         Parameter.CAMPAIGN_ID = 'mc';
@@ -1996,7 +1998,7 @@
             }
             return this.queue.getUserIdCookie(pixelVersion, context);
         };
-        ACore.VERSION = '0.1.0';
+        ACore.VERSION = '0.1.1';
         ACore.V4 = 'v4';
         ACore.V5 = 'v5';
         ACore.SMART = 'smart';
@@ -3458,19 +3460,26 @@
         __extends(Session, _super);
         function Session() {
             var _this = _super.call(this) || this;
+            _this.TEMPORARY_SESSION_ID_TYPE = '2.0.0';
             _this.loginStatus = '';
+            _this.temporarySessionId = '';
+            _this.temporarySessionIdType = '';
             _this.parameter = {};
             return _this;
         }
         Session.prototype.getQueryList = function () {
             var queryList = {};
             queryList['loginStatus'] = Parameter.LOGIN_STATUS;
+            queryList['temporarySessionId'] = Parameter.TEMPORARY_SESSION_ID;
+            queryList['temporarySessionIdType'] = Parameter.TEMPORARY_SESSION_ID_TYPE;
             queryList['parameter'] = Parameter.CUSTOM_SESSION_PARAMETER;
             return queryList;
         };
         Session.prototype.toMap = function () {
             var data = {};
             data['loginStatus'] = this.loginStatus;
+            data['temporarySessionId'] = this.temporarySessionId;
+            data['temporarySessionIdType'] = this.temporarySessionIdType;
             data['parameter'] = this.parameter;
             return data;
         };
@@ -3480,6 +3489,11 @@
         };
         Session.prototype.setParameter = function (i, v) {
             this.parameter[i] = v;
+            return this;
+        };
+        Session.prototype.setTemporarySessionId = function (tSessionId) {
+            this.temporarySessionId = tSessionId;
+            this.temporarySessionIdType = this.TEMPORARY_SESSION_ID_TYPE;
             return this;
         };
         return Session;

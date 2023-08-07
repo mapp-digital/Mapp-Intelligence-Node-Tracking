@@ -11,11 +11,13 @@ export class Parameter {
     public static readonly CLIENT_HINT_USER_AGENT_MODEL: string = "X-WT-SEC-CH-UA-MODEL";
     public static readonly CLIENT_HINT_USER_AGENT_MOBILE: string = "X-WT-SEC-CH-UA-MOBILE";
     public static readonly CLIENT_HINT_USER_AGENT_PLATFORM: string = "X-WT-SEC-CH-UA-PLATFORM";
-    public static readonly CLIENT_HINT_USER_AGENT_PLATFORM_VERSION: string = "X-WT-SEC-CH-UA-PLATFORM_VERSION";
+    public static readonly CLIENT_HINT_USER_AGENT_PLATFORM_VERSION: string = "X-WT-SEC-CH-UA-PLATFORM-VERSION";
 
     // predefined parameter
     public static readonly EVER_ID: string = 'eid';
     public static readonly CUSTOM_EVER_ID: string = 'ceid';
+    public static readonly TEMPORARY_SESSION_ID: string = 'fpv';
+    public static readonly TEMPORARY_SESSION_ID_TYPE: string = 'fpt';
     public static readonly PAGE_URL: string = 'pu';
     public static readonly ACTION_NAME: string = 'ct';
     public static readonly CAMPAIGN_ID: string = 'mc';

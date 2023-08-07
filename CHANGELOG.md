@@ -1,3 +1,9 @@
+<a name="0.1.1"></a>
+# 0.1.1 (2023-08-07)
+
+- Support temporary session ID (see [Data](https://documentation.mapp.com/latest/en/data-7239453.html))
+
+
 <a name="0.1.0"></a>
 # 0.1.0 (2023-04-17)
 
