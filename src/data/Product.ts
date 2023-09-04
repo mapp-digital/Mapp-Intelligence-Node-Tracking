@@ -7,13 +7,33 @@ export class Product extends AData {
      */
     public static readonly VIEW: string = 'view';
     /**
-     * Constant for add product to basket.
+     * Constant for add product to cart.
      */
     public static readonly BASKET: string = 'add';
+    /**
+     * Constant for add product to cart.
+     */
+    public static readonly ADD_TO_CART: string = 'add';
+    /**
+     * Constant for remove product from cart.
+     */
+    public static readonly DELETE_FROM_CART: string = 'del';
+    /**
+     * Constant for checkout process.
+     */
+    public static readonly CHECKOUT: string = 'checkout';
     /**
      * Constant for order confirmation.
      */
     public static readonly CONFIRMATION: string = 'conf';
+    /**
+     * Constant for add product to wishlist.
+     */
+    public static readonly ADD_TO_WISHLIST: string = "add-wl";
+    /**
+     * Constant for remove product from wishlist.
+     */
+    public static readonly DELETE_FROM_WISHLIST: string = "del-wl";
 
     /**
      * Saves products placed in the shopping cart. This property must be entered if products are to be measured.
@@ -30,7 +50,8 @@ export class Product extends AData {
      */
     private quantity: number = 0;
     /**
-     * Contains states of your product (VIEW, BASKET, CONFIRMATION).
+     * Contains states of your product (VIEW, BASKET, ADD_TO_CART, DELETE_FROM_CART, CHECKOUT,
+     * CONFIRMATION, ADD_TO_WISHLIST, DELETE_FROM_WISHLIST).
      */
     private status: string = Product.VIEW;
     /**
@@ -133,12 +154,21 @@ export class Product extends AData {
     }
 
     /**
-     * @param s Contains states of your product (VIEW, BASKET, CONFIRMATION)
+     * @param s Contains states of your product (VIEW, BASKET, ADD_TO_CART, DELETE_FROM_CART, CHECKOUT,
+     * CONFIRMATION, ADD_TO_WISHLIST, DELETE_FROM_WISHLIST)
      *
      * @return MappIntelligenceProduct
      */
     public setStatus(s: string): Product {
-        if (s === Product.VIEW || s === Product.BASKET || s === Product.CONFIRMATION) {
+        if (s === Product.VIEW
+            || s === Product.BASKET
+            || s === Product.ADD_TO_CART
+            || s === Product.DELETE_FROM_CART
+            || s === Product.CHECKOUT
+            || s === Product.CONFIRMATION
+            || s === Product.ADD_TO_WISHLIST
+            || s === Product.DELETE_FROM_WISHLIST
+        ) {
             this.status = s;
         }
 

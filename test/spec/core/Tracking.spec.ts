@@ -208,6 +208,36 @@ describe('MappIntelligenceTracking', () => {
         expect(MappIntelligenceUnitUtil.checkStatistics(request, '34')).toBeTruthy();
     });
 
+    it('simple product data', async () => {
+        const mic = new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net');
+        const mit = new MappIntelligenceTracking(mic);
+
+        const status: {[key: string]: string} = {};
+        status[MappIntelligenceProduct.VIEW] = 'view';
+        status[MappIntelligenceProduct.BASKET] = 'add';
+        status[MappIntelligenceProduct.DELETE_FROM_CART] = 'del';
+        status[MappIntelligenceProduct.CHECKOUT] = 'checkout';
+        status[MappIntelligenceProduct.CONFIRMATION] = 'conf';
+        status[MappIntelligenceProduct.ADD_TO_WISHLIST] = 'add-wl';
+        status[MappIntelligenceProduct.DELETE_FROM_WISHLIST] = 'del-wl';
+
+        for (let key in status) {
+            expect(await mit.track((new MappIntelligenceParameterMap())
+                .add(MappIntelligenceParameter.PRODUCT_ID, "065ee2b001")
+                .add(MappIntelligenceParameter.PRODUCT_COST, "59.99")
+                .add(MappIntelligenceParameter.PRODUCT_QUANTITY, "1")
+                .add(MappIntelligenceParameter.PRODUCT_STATUS, key)
+            )).toBeTruthy();
+
+            const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(mit);
+            const request: string = requests[requests.length - 1];
+            expect(request).toMatch(/.*&ba=065ee2b001.*/);
+            expect(request).toMatch(/.*&co=59\.99.*/);
+            expect(request).toMatch(/.*&qn=1.*/);
+            expect(request).toMatch(new RegExp('.*&st=' + status[key] + '.*'));
+        }
+    });
+
     it('data object - 1', async () => {
         const mic = new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net');
         const mit = new MappIntelligenceTracking(mic);
@@ -316,6 +346,40 @@ describe('MappIntelligenceTracking', () => {
         expect(requests.length).toBe(1);
         expect(requests[0]).toMatch(/^wt\?p=600,0,,,,,[0-9]{13},0,,&.+/);
         expect(MappIntelligenceUnitUtil.checkStatistics(requests[0], '34')).toBeTruthy();
+    });
+
+    it('data product object', async () => {
+        const mic = new MappIntelligenceConfig('111111111111111', 'analytics01.wt-eu02.net');
+        const mit = new MappIntelligenceTracking(mic);
+
+        const status: {[key: string]: string} = {};
+        status[MappIntelligenceProduct.VIEW] = 'view';
+        status[MappIntelligenceProduct.BASKET] = 'add';
+        status[MappIntelligenceProduct.DELETE_FROM_CART] = 'del';
+        status[MappIntelligenceProduct.CHECKOUT] = 'checkout';
+        status[MappIntelligenceProduct.CONFIRMATION] = 'conf';
+        status[MappIntelligenceProduct.ADD_TO_WISHLIST] = 'add-wl';
+        status[MappIntelligenceProduct.DELETE_FROM_WISHLIST] = 'del-wl';
+
+        for (let key in status) {
+            const product1 = (new MappIntelligenceProduct("065ee2b001"))
+                .setCost(59.99)
+                .setQuantity(1)
+                .setStatus(key);
+
+            expect(await mit.track((new MappIntelligenceDataMap())
+                .product((new MappIntelligenceProductCollection())
+                    .add(product1)
+                )
+            )).toBeTruthy();
+
+            const requests: Array<string> = MappIntelligenceUnitUtil.getQueue(mit);
+            const request: string = requests[requests.length - 1];
+            expect(request).toMatch(/.*&ba=065ee2b001.*/);
+            expect(request).toMatch(/.*&co=59\.99.*/);
+            expect(request).toMatch(/.*&qn=1.*/);
+            expect(request).toMatch(new RegExp('.*&st=' + status[key] + '.*'));
+        }
     });
 
     it('without temporary session ID', async () => {

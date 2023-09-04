@@ -1,3 +1,11 @@
+<a name="0.2.0"></a>
+# 0.2.0 (2023-09-04)
+
+## Feature
+
+- New product status added (see [addToCart](https://documentation.mapp.com/latest/en/data-19126584.html), [deleteFromCart](https://documentation.mapp.com/latest/en/data-19126584.html), [checkout](https://documentation.mapp.com/latest/en/data-19126584.html), [addToWishlist](https://documentation.mapp.com/latest/en/data-19126584.html) and [deleteFromWishlist](https://documentation.mapp.com/latest/en/data-19126584.html))
+
+
 <a name="0.1.1"></a>
 # 0.1.1 (2023-08-07)
 

@@ -1998,7 +1998,7 @@
             }
             return this.queue.getUserIdCookie(pixelVersion, context);
         };
-        ACore.VERSION = '0.1.1';
+        ACore.VERSION = '0.2.0';
         ACore.V4 = 'v4';
         ACore.V5 = 'v5';
         ACore.SMART = 'smart';
@@ -3429,7 +3429,14 @@
             return this;
         };
         Product.prototype.setStatus = function (s) {
-            if (s === Product.VIEW || s === Product.BASKET || s === Product.CONFIRMATION) {
+            if (s === Product.VIEW
+                || s === Product.BASKET
+                || s === Product.ADD_TO_CART
+                || s === Product.DELETE_FROM_CART
+                || s === Product.CHECKOUT
+                || s === Product.CONFIRMATION
+                || s === Product.ADD_TO_WISHLIST
+                || s === Product.DELETE_FROM_WISHLIST) {
                 this.status = s;
             }
             return this;
@@ -3452,7 +3459,12 @@
         };
         Product.VIEW = 'view';
         Product.BASKET = 'add';
+        Product.ADD_TO_CART = 'add';
+        Product.DELETE_FROM_CART = 'del';
+        Product.CHECKOUT = 'checkout';
         Product.CONFIRMATION = 'conf';
+        Product.ADD_TO_WISHLIST = "add-wl";
+        Product.DELETE_FROM_WISHLIST = "del-wl";
         return Product;
     }(AData));
 

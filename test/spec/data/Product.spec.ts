@@ -53,12 +53,52 @@ describe('MappIntelligenceProduct', () => {
         expect('add').toBe(data['status']);
     });
 
+    it('set status addToCart', async () => {
+        const product = new MappIntelligenceProduct();
+        product.setStatus(MappIntelligenceProduct.ADD_TO_CART);
+
+        const data: { [key: string]: any } = product.getData();
+        expect('add').toBe(data['status']);
+    });
+
+    it('set status deleteFromCart', async () => {
+        const product = new MappIntelligenceProduct();
+        product.setStatus(MappIntelligenceProduct.DELETE_FROM_CART);
+
+        const data: { [key: string]: any } = product.getData();
+        expect('del').toBe(data['status']);
+    });
+
+    it('set status checkout', async () => {
+        const product = new MappIntelligenceProduct();
+        product.setStatus(MappIntelligenceProduct.CHECKOUT);
+
+        const data: { [key: string]: any } = product.getData();
+        expect('checkout').toBe(data['status']);
+    });
+
     it('set status confirmation', async () => {
         const product = new MappIntelligenceProduct();
         product.setStatus(MappIntelligenceProduct.CONFIRMATION);
 
         const data: { [key: string]: any } = product.getData();
         expect('conf').toBe(data['status']);
+    });
+
+    it('set status addToWishlist', async () => {
+        const product = new MappIntelligenceProduct();
+        product.setStatus(MappIntelligenceProduct.ADD_TO_WISHLIST);
+
+        const data: { [key: string]: any } = product.getData();
+        expect('add-wl').toBe(data['status']);
+    });
+
+    it('set status deleteFromWishlist', async () => {
+        const product = new MappIntelligenceProduct();
+        product.setStatus(MappIntelligenceProduct.DELETE_FROM_WISHLIST);
+
+        const data: { [key: string]: any } = product.getData();
+        expect('del-wl').toBe(data['status']);
     });
 
     it('set parameter', async () => {

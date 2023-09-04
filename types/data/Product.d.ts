@@ -2,7 +2,12 @@ import { AData } from './AData';
 export declare class Product extends AData {
     static readonly VIEW: string;
     static readonly BASKET: string;
+    static readonly ADD_TO_CART: string;
+    static readonly DELETE_FROM_CART: string;
+    static readonly CHECKOUT: string;
     static readonly CONFIRMATION: string;
+    static readonly ADD_TO_WISHLIST: string;
+    static readonly DELETE_FROM_WISHLIST: string;
     private id;
     private cost;
     private quantity;
